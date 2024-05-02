@@ -1,0 +1,363 @@
+{% extends 'base.html' %}
+
+{% block title %}Records{% endblock %}
+
+{% block active_records %}active{% endblock %}
+
+
+{% block body %}
+
+<div class="p-1 container" style="max-height: 100%; max-width: 100%; overflow: auto; padding: 0; margin: 0;">
+    <div class="container">
+        <!-- <div class="container-fluid p-2">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addclient">Добавить</button>
+        </div> -->
+        <div class="container-1 justify-content-between p-2">
+            <label><input type="text" id="filter_input" class="form-label search"></label>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addrecord">Добавить</button>
+        </div>
+    </div>
+
+    <div class="scroll-table">
+        <table id="redords" class="table-wrapper-scroll-y results table table-sm table-striped border-top-color align-middle border-1 border-secondary" cellspacing="0">
+            <thead>
+                <tr>
+                    <th scope="col" style="width: 7%; padding-left: 5px;">#</th>
+                    <th scope="col">Учитель</th>
+                    <th scope="col">Ученик</th>
+                    <th scope="col" style="width: 9%;">Предмет</th>
+                    <th scope="col" style="width: 12%;">Время</th>
+                    <th scope="col" style="width: 12%;">Статус визита</th>
+                    <th scope="col" style="width: 8%;">Статус оплаты</th>
+                    <th scope="col" style="width: 8%;">Статус выплаты</th>
+                    <th scope="col" style="width: 5%;">Edit</th>
+                </tr>
+                <tr class="warning no-result">
+                    <td colspan="4"><i class="fa fa-warning"></i> No result</td>
+                </tr>
+            </thead>
+        </table>
+        <div class="scroll-table-body">
+            <table>
+                <tbody id="table_data">
+                {% for item in records_data %}
+                <tr>    
+                    <th scope="row" style="width: 7%; padding-left: 5px;"> {{ item._id }} </th>
+                    <td> {{ item.teachers_fullname }} </td>
+                    <td> {{ item.students_fullname }} </td>
+                    <td style="width: 9%;"> {{ item.subject }} </td>
+                    <td style="width: 12%;"> {{ item.timestart }} </td>
+                    <td style="width: 12%;"> {{ item.status_record }} </td>
+                    <td style="width: 8%;"> {{ item.status_payment }} </td>
+                    <td style="width: 8%;"> {{ item.status_payment_to_teacher }} </td>
+                    <td style="width: 5%;">    
+                        <button  data-bs-toggle="modal" data-bs-target="#editrecord" data-client="{{ item._id }}---{{ item.teacher_id }}---{{ item.teachers_fullname }}---{{ item.student_id }}---{{ item.students_fullname }}---{{ item.subject }}---{{ item.date }}---{{ item.time }}---{{ item.duration }}---{{ item.price }}---{{ item.teachers_fee }}---{{ item.status_record }}---{{ item.status_payment }}---{{ item.status_payment_to_teacher }}---{{ item.meeting_link_for_student }}---{{ item.meeting_link_for_teacher }}---{{ item.link_to_record }}" type="button" class="btn bg-black" data-ripple-color="dark">
+                            <i class="fas fa-times"></i>
+                        </button> 
+                    </td>  
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- EDIT -->
+<!-- <div class="modal modal-lg fade" id="editrecord" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Создание записи</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+            </div>
+            <form method="post" action="records/create">
+                <div class="modal-body" style="height: 600px;"> 
+                    <div class="container-fluid" >
+                        <div class="d-flex p-1 w-100 align-middle" id="choose_teacher">
+                            <span class="text-dark m-1" style="width: 80px;">Учитель</span> 
+                            <select class="select selectpicker" data-width="350px" data-live-search="true" name="teacher_id" id="teacher_id" title="Выберите преподавателя" data-size="5" required>
+                                {% for teacher in teachers_data %}
+                                    <option value="{{ teacher._id }}">{{ teacher.fullname }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="d-flex p-1 w-100 align-middle" id="choose_student">
+                            <span class="text-dark m-1" style="width: 80px;">Ученик</span> 
+                            <select class="select selectpicker" data-width="350px" data-live-search="true" name="student_id" id="student_id" title="Выберите ученика" data-size="5" required>
+                            {% for client in clients_data %}
+                            <option value="{{ client._id }}">{{ client.fullname }}</option>
+                            {% endfor %}
+                            </select>
+                        </div>
+                        <div class="d-flex p-1 w-100 align-middle" id="choose_subject">
+                            <span class="text-dark m-1" style="width: 80px;">Предмет</span> 
+                            <select class="select selectpicker" data-width="200px" name="subject" id="subject" title="Выберите предмет" data-size="5" required>
+                            {% for subject in subjects %}
+                            <option value="{{ subject }}">{{ subject }}</option>
+                            {% endfor %}
+                            </select>
+                        </div>
+                        <div class="d-flex p-1 w-100 align-middle">
+                            <span class="text-dark m-1" style="width: 80px;">Дата</span> 
+                            <input type="date" id="date" name="date" class="form-control" style="max-height: 35px; max-width: 150px;"> 
+                            <select class="select form-control" style="max-width: 80px; max-height: 35px; margin-left: 10px;" name="time" id="time" title="Час" data-size="5" required>
+                                {% for hour in range(24) %}
+                                    {% for minutes in ['00','15','30','45'] %}
+                                    <option value="{{ hour }}:{{ minutes }}">{{ hour }}:{{ minutes }}</option>
+                                    {% endfor %}
+                                {% endfor %}
+                            </select>
+                            <span class="text-dark m-1" style="width: 110px; padding-left: 15px;">Длительность</span> 
+                            <select class="select form-control" style="max-width: 50px; max-height: 35px; margin-left: 10px;" name="duration" id="duration" title="Час" data-size="5" required>
+                                    <option value="30">30</option>
+                                    <option value="60" selected>60</option>
+                                    <option value="120">120</option>
+                            </select>
+                        </div>
+                        <div class="d-flex p-1 w-100 align-middle">
+                            <span class="text-dark m-1" style="width: 80px;">Стоимость</span> 
+                            <input type="text" class="form-control" style="max-height: 35px; max-width: 120px;" value="1000" name="price" id="price" required>
+    
+                            <span class="text-dark m-1" style="width: 90px; padding-left: 15px;">Зарплата</span> 
+                            <input type="text" class="form-control" style="max-height: 35px; max-width: 120px;" value="600" name="teachers_fee" id="teachers_fee" required>
+                        </div>
+                        <div class="d-flex p-1 w-100 align-middle" style="margin-top: 20px;" id="status_record">
+                            <span class="text-dark m-1" style="width: 150px;">Статус визита</span> 
+                            <select class="select selectpicker" data-width="250px" name="status_record" id="status_record" required>
+                                <option value="В ожидании клиента" selected>В ожидании клиента</option>
+                                {% for status in ['Клиент пришел','Клиент не пришел','Запись отменена'] %}
+                                <option value="{{ status }}">{{ status }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="d-flex p-1 w-100 align-middle" id="status_payment">
+                            <span class="text-dark m-1" style="width: 150px;">Статус оплаты</span> 
+                            <select class="select selectpicker" data-width="250px" name="status_payment" id="status_payment" required>
+                            <option value="Не оплачено" selected>Не оплачен</option>
+                            {% for status in ['Оплачено разово','Оплачено абонементом'] %}
+                            <option value="{{ status }}">{{ status }}</option>
+                            {% endfor %}
+                            </select>
+                        </div>
+                        <div class="d-flex p-1 w-100 align-middle" id="status_payment_to_teacher">
+                            <span class="text-dark m-1" style="width: 150px;">Статус оплаты преподавателю</span> 
+                            <select class="select selectpicker" data-width="250px" name="status_payment_to_teacher" id="status_payment_to_teacher" required>
+                            <option value="Не оплачено" selected>Не оплачено</option>
+                            <option value="Оплачено">Оплачено</option>
+                            </select>
+                        </div>
+                        <div class="d-flex p-1 w-100 align-middle" style="margin-top: 12px;">
+                            <span class="text-dark m-1" style="width: 300px;">Ссылка на встречу для ученика</span> 
+                            <input type="text" class="form-control" style="max-height: 35px; max-width: 300px;" name="meeting_link_for_student" id="meeting_link_for_student" readonly>
+                        </div>
+                        <div class="d-flex p-1 w-100 align-middle">
+                            <span class="text-dark m-1" style="width: 300px;">Ссылка на встречу для преподавателя</span> 
+                            <input type="text" class="form-control" style="max-height: 35px; max-width: 300px;" name="meeting_link_for_teacher" id="meeting_link_for_teacher" readonly>
+                        </div>
+                        <div class="d-flex p-1 w-100 align-middle" style="margin-top: 10px;">
+                            <span class="text-dark m-1" style="width: 300px;">Ссылка на запись урока</span> 
+                            <input type="text" class="form-control" style="max-height: 35px; max-width: 300px;" name="link_to_record" id="link_to_record" readonly>
+                        </div>
+                    </div>
+                    
+                </div>
+                <div class="modal-footer justify-content-between p-2">
+                    <a class="btn btn-danger">Удалить</a>
+                    <button class="btn btn-success" type="submit">Сохранить</button>
+                </div>
+            </form>
+          </div>
+    </div>
+</div>
+
+
+
+<div class="modal modal-lg fade" id="addrecord" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Создание записи</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+        </div>
+        <form method="post" action="records/create">
+            <div class="modal-body" style="height: 600px;"> 
+                <div class="container-fluid" >
+                    <div class="d-flex p-1 w-100 align-middle">
+                        <span class="text-dark m-1" style="width: 80px;">Учитель</span> 
+                        <select class="select selectpicker" data-width="350px" data-live-search="true" name="teacher_id" id="teacher_id" title="Выберите преподавателя" data-size="5" required>
+                            {% for teacher in teachers_data %}
+                                <option value="{{ teacher._id }}">{{ teacher.fullname }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="d-flex p-1 w-100 align-middle">
+                        <span class="text-dark m-1" style="width: 80px;">Ученик</span> 
+                        <select class="select selectpicker" data-width="350px" data-live-search="true" name="student_id" id="student_id" title="Выберите ученика" data-size="5" required>
+                        {% for client in clients_data %}
+                        <option value="{{ client._id }}">{{ client.fullname }}</option>
+                        {% endfor %}
+                        </select>
+                    </div>
+                    <div class="d-flex p-1 w-100 align-middle">
+                        <span class="text-dark m-1" style="width: 80px;">Предмет</span> 
+                        <select class="select selectpicker" data-width="200px" name="subject" id="subject" title="Выберите предмет" data-size="5" required>
+                        {% for subject in subjects %}
+                        <option value="{{ subject }}">{{ subject }}</option>
+                        {% endfor %}
+                        </select>
+                    </div>
+                    <div class="d-flex p-1 w-100 align-middle">
+                        <span class="text-dark m-1" style="width: 80px;">Дата</span> 
+                        <input type="date" id="date" name="date" class="form-control" style="max-height: 35px; max-width: 150px;"> 
+                        <select class="select form-control" style="max-width: 80px; max-height: 35px; margin-left: 10px;" name="time" id="time" title="Час" data-size="5" required>
+                            {% for hour in range(24) %}
+                                {% for minutes in ['00','15','30','45'] %}
+                                <option value="{{ hour }}:{{ minutes }}">{{ hour }}:{{ minutes }}</option>
+                                {% endfor %}
+                            {% endfor %}
+                        </select>
+                        <span class="text-dark m-1" style="width: 110px; padding-left: 15px;">Длительность</span> 
+                        <select class="select form-control" style="max-width: 50px; max-height: 35px; margin-left: 10px;" name="duration" id="duration" title="Час" data-size="5" required>
+                                <option value="30">30</option>
+                                <option value="60" selected>60</option>
+                                <option value="120">120</option>
+                        </select>
+                    </div>
+                    <div class="d-flex p-1 w-100 align-middle">
+                        <span class="text-dark m-1" style="width: 80px;">Стоимость</span> 
+                        <input type="text" class="form-control" style="max-height: 35px; max-width: 120px;" value="1000" name="price" id="price" required>
+
+                        <span class="text-dark m-1" style="width: 90px; padding-left: 15px;">Зарплата</span> 
+                        <input type="text" class="form-control" style="max-height: 35px; max-width: 120px;" value="600" name="teachers_fee" id="teachers_fee" required>
+                    </div>
+                    <div class="d-flex p-1 w-100 align-middle" style="margin-top: 20px;">
+                        <span class="text-dark m-1" style="width: 150px;">Статус визита</span> 
+                        <select class="select selectpicker" data-width="250px" name="status_record" id="status_record" disabled required>
+                            <option value="В ожидании клиента" selected>В ожидании клиента</option>
+                            {% for status in ['Клиент пришел','Клиент не пришел','Запись отменена'] %}
+                            <option value="{{ status }}">{{ status }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="d-flex p-1 w-100 align-middle">
+                        <span class="text-dark m-1" style="width: 150px;">Статус оплаты</span> 
+                        <select class="select selectpicker" data-width="250px" name="status_payment" id="status_payment" disabled required>
+                        <option value="В ожидании клиента" selected>Не оплачен</option>
+                        {% for status in ['Оплачено разово','Оплачено абонементом'] %}
+                        <option value="{{ status }}">{{ status }}</option>
+                        {% endfor %}
+                        </select>
+                    </div>
+                    <div class="d-flex p-1 w-100 align-middle">
+                        <span class="text-dark m-1" style="width: 150px;">Статус оплаты преподавателю</span> 
+                        <select class="select selectpicker" data-width="250px" name="status_payment_to_teacher" id="status_payment_to_teacher" disabled required>
+                        <option value="Не оплачено" selected>Не оплачено</option>
+                        <option value="Оплачено">Оплачено</option>
+                        </select>
+                    </div>
+                    <div class="d-flex p-1 w-100 align-middle" style="margin-top: 12px;">
+                        <span class="text-dark m-1" style="width: 300px;">Ссылка на встречу для ученика</span> 
+                        <input type="text" class="form-control" style="max-height: 35px; max-width: 300px;" name="meeting_link_for_student" id="meeting_link_for_student" disabled>
+                    </div>
+                    <div class="d-flex p-1 w-100 align-middle">
+                        <span class="text-dark m-1" style="width: 300px;">Ссылка на встречу для преподавателя</span> 
+                        <input type="text" class="form-control" style="max-height: 35px; max-width: 300px;" name="meeting_link_for_teacher" id="meeting_link_for_teacher" disabled>
+                    </div>
+                    <div class="d-flex p-1 w-100 align-middle" style="margin-top: 10px;">
+                        <span class="text-dark m-1" style="width: 300px;">Ссылка на запись урока</span> 
+                        <input type="text" class="form-control" style="max-height: 35px; max-width: 300px;" name="link_to_record" id="link_to_record" disabled>
+                    </div>
+                </div>
+                
+            </div>
+            <div class="modal-footer justify-content-end p-2">
+                <button class="btn btn-success" type="submit">Сохранить</button>
+            </div>
+        </form>
+      </div>
+    </div>
+</div> -->
+<!--  -->
+
+
+{# <!-- "{{ item._id }}---{{ item.teacher_id }}---{{ item.teachers_fullname }}---{{ item.student_id }}---{{ item.students_fullname }}---{{ item.subject }}---
+    {{ item.date }}---{{ item.time }}---{{ item.duration }}---{{ item.price }}---{{ item.teachers_fee }}---{{ item.status_record }}---{{ item.status_payment }}---{{ item.status_payment_to_teacher }}---
+    {{ item.meeting_link_for_student }}---{{ item.meeting_link_for_teacher }}---{{ item.link_to_record }}" --> #}
+
+{% block scripts %}
+    
+<script>
+String.prototype.format = function () {
+  var args = arguments;
+  return this.replace(/\{(\d+)\}/g, function (m, n) { return args[n]; });
+};
+
+$('#editrecord').on('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget) 
+    var recipient = button.data('client').split('---')
+    var modal = $(this)
+    modal.find('.modal-title').text('Редактирование записи номер ' + recipient[0])
+
+    modal.find('.modal-body option').removeAttr('selected');
+
+    modal.find('.modal-body option[value="{0}"]'.format(recipient[1])).attr('selected','selected');
+    modal.find('div[id=choose_teacher] .filter-option-inner-inner').text(recipient[2])
+    modal.find('div[id=choose_teacher] .filter-option-inner-inner').css('color','black')
+
+    modal.find('.modal-body option[value="{0}"]'.format(recipient[3])).attr('selected','selected');
+    modal.find('div[id=choose_student] .filter-option-inner-inner').text(recipient[4])
+    modal.find('div[id=choose_student] .filter-option-inner-inner').css('color','black')
+
+    modal.find('.modal-body option[value="{0}"]'.format(recipient[5])).attr('selected','selected');
+    modal.find('div[id=choose_subject] .filter-option-inner-inner').text(recipient[5])
+    modal.find('div[id=choose_subject] .filter-option-inner-inner').css('color','black')
+
+    modal.find('.modal-body input[name=date]').val(recipient[6]);
+
+    modal.find('.modal-body option[value="{0}"]'.format(recipient[7])).attr('selected','selected');
+
+    modal.find('.modal-body option[value="{0}"]'.format(recipient[8])).attr('selected','selected');
+
+    modal.find('.modal-body input[name=price]').val(recipient[9]);
+    modal.find('.modal-body input[name=teachers_fee]').val(recipient[10]);
+
+    modal.find('.modal-body option[value="{0}"]'.format(recipient[11])).attr('selected','selected');
+    modal.find('div[id=status_record] .filter-option-inner-inner').text(recipient[11])
+    modal.find('div[id=status_record] .filter-option-inner-inner').css('color','black')
+
+    modal.find('.modal-body option[value="{0}"]'.format(recipient[12])).attr('selected','selected');
+    modal.find('div[id=status_payment] .filter-option-inner-inner').text(recipient[12])
+    modal.find('div[id=status_payment] .filter-option-inner-inner').css('color','black')
+
+    modal.find('.modal-body option[value="{0}"]'.format(recipient[13])).attr('selected','selected');
+    modal.find('div[id=status_payment_to_teacher] .filter-option-inner-inner').text(recipient[13])
+    modal.find('div[id=status_payment_to_teacher] .filter-option-inner-inner').css('color','black')
+
+
+    modal.find('.modal-body input[name=meeting_link_for_student]').val(recipient[14]);
+    modal.find('.modal-body input[name=meeting_link_for_teacher]').val(recipient[15]);
+    modal.find('.modal-body input[name=link_to_record]').val(recipient[16]);
+
+
+    modal.find('.modal-footer a').attr('href', '/records/delete/'+recipient[0])
+    modal.find('.modal-content form').attr('action', '/records/edit/'+recipient[0])
+
+  })
+</script>
+
+
+
+<script>
+    $(document).ready(function(){
+      $("#filter_input").on("keyup", function() {
+        var value = $(this).val().toLowerCase();
+        $("#table_data tr").filter(function() {
+          $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+      });
+    });
+</script>
+
+{% endblock %}
+{% endblock %}

@@ -1,0 +1,6 @@
+.venv/
+.env
+.ipynb_checkpoints/
+__pycache__/
+Notebook_tests.ipynb
+config.py

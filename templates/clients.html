@@ -1,0 +1,376 @@
+{% extends 'base.html' %}
+
+{% block title %}Клиенты{% endblock %}
+
+{% block active_clients %}active{% endblock %}
+
+
+{% block body %}
+
+
+<div class="p-1 container" style="max-height: 100%; max-width: 100%; overflow: auto; padding: 0; margin: 0;">
+    <div class="container">
+        <!-- <div class="container-fluid p-2">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addclient">Добавить</button>
+        </div> -->
+        <div class="container-1 justify-content-between p-2">
+            <label><input type="text" id="filter_input" class="form-label search"></label>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addclient">Добавить</button>
+        </div>
+    </div>
+
+    <div class="scroll-table">
+      <table id="clients" class="results table table-sm table-striped border-top-color align-middle border-1 border-secondary" cellspacing="0">
+          <thead>
+              <tr>
+                  <th scope="col" style="width: 6%; padding-left: 7px;">#</th>
+                  <th scope="col"  style="width: 9%">Телефон</th>
+                  <th scope="col"  style="width: 14%">Почта</th>
+                  <th scope="col">ФИО</th>
+                  <th scope="col"> parents_fullname </th>
+                  <th scope="col" style="width: 7%">timezone</th>
+                  <th scope="col" style="width: 5%">Класс</th>
+                  <th scope="col" style="width: 14%">Username</th>
+                  <th scope="col" style="width: 12%">Telegram ids</th>
+                  <th scope="col" style="width: 5%">Edit</th>
+              </tr>
+              <tr class="warning no-result">
+                  <td colspan="4"><i class="fa fa-warning"></i> No result</td>
+              </tr>
+          </thead>
+      </table>
+    <div class="scroll-table-body">
+      <table class="results table table-sm border-top-color align-middle border-1 border-secondary" cellspacing="0">
+        <tbody id="table_data">
+        {% for item in clients %}
+        <tr>
+            <th scope="row" style="width: 6%; padding-left: 7px;"> {{ item._id }} </th>
+            <td style="width: 9%"> {{ item.phone }} </td>
+            <td style="width: 14%"> {{ item.mail }} </td>
+            <td> {{ item.fullname }} </td>
+            <td> {{ item.parents_fullname }} </td>
+            <td style="width: 7%"> {{ item.timezone }} </td>
+            <td style="width: 5%"> {{ item.grade }} </td>
+            <td style="width: 14%">{{ item.parents_username_tg }} {{ item.students_username_tg }}</td>
+            <td style="width: 12%">{% for id_tg in item.tg_ids -%}{{ id_tg }}{% if item.tg_ids[-1]!=id_tg %}, {% endif %}{% endfor %}</td>
+            <td style="width: 5%">    
+                <button  name="edit_client_bt" data-client="{{ item._id }}///{{ item.phone }}///{{ item.mail }}///{{ item.fullname }}///{{ item.parents_fullname }}///{{ item.timezone }}///{{ item.grade }}///{{ item.parents_username_tg }}///{{ item.students_username_tg }}///{% for id_tg in item.tg_ids %}{{ id_tg }}{% if item.tg_ids[-1]!=id_tg %} {% endif %}{% endfor %}///{% for abonement in item.abonements %}{{ abonement }}=={{ get_abonement(item.abonements,abonement) }}--{% endfor %}///{% for studied_subject in item.studied_subjects %}{{ studied_subject }}=={{ get_studied_subject(item.studied_subjects,studied_subject) }}--{% endfor %}///{% for tag in item.tags %}{{ tag }}{% if item.tags[-1]!=tag %} {% endif %}{% endfor %}///{{ item.info }}" type="button" class="btn bg-black" data-ripple-color="dark">
+                    <i class="fas fa-times"></i>
+                </button> 
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="modal fade modal-lg" id="editclient" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Клиент</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+      </div>
+      <form method="post" action="/clients/create">
+          <div class="modal-body" style="height: 600px;">  
+            <div class="container-fluid row">
+              <div class="container-fluid" style="width: 460px; height: 600px;">              
+                    <div class="d-flex p-1 w-100 align-middle">
+                      <label class="text-dark m-1" style="width: 120px;">Телефон</label> <input type="text" class="form-control" id="phone" style="max-width: 200px; max-height: 35px;" name="phone" id="phone" placeholder="+7 ..." required>
+                    </div>
+                    <div class="d-flex p-1 w-100 align-middle">
+                      <label class="text-dark m-1" style="width: 120px;">Почта</label> <input type="text" class="form-control" id="mail" style="max-width: 250px; max-height: 35px;" name="mail" id="phone" required>
+                    </div>
+                    <div class="d-flex p-1 w-100 align-middle">
+                      <label class="text-dark m-1" style="width: 120px;">ФИО</label> <input type="text" class="form-control" style="max-width: 300px; max-height: 35px;" name="fullname" id="fullname" required>
+                    </div>
+                    <div class="d-flex p-1 w-100 align-middle">
+                      <label class="text-dark m-1" style="width: 120px;">ФИО родителя</label> <input type="text" class="form-control" style="max-width: 300px; max-height: 35px;" name="parents_fullname" id="parents_fullname">
+                    </div>
+                    <div class="d-flex p-1 align-middle w-100">
+                      <label class="text-dark m-1" style="width: 120px;">Часовой пояс</label> <input type="text" class="form-control" style="max-width: 100px; max-height: 35px;" name="timezone" id="timezone" placeholder="+0" required>
+                    
+                      <label class="text-dark m-1" style="width: 50px; margin-left: 20px !important;">Класс</label> <input type="text" class="form-control" style="max-width: 100px; max-height: 35px;" name="grade" id="grade" placeholder="11" required>
+                    </div>
+                    <div class="d-flex p-1 w-100 align-middle">
+                      <label class="text-dark m-1" style="width: 140px;">Parents username</label> <input type="text" class="form-control" style="max-width: 200px; max-height: 35px;" name="parents_username_tg" id="parents_username_tg" style="max-height: 40px;" placeholder="@..." required>
+                    </div>
+                    <div class="d-flex p-1 w-100 align-middle">
+                      <label class="text-dark m-1" style="width: 140px;">Students username</label> <input type="text" class="form-control" style="max-width: 200px; max-height: 35px;" name="students_username_tg" id="students_username_tg" style="max-height: 40px;" placeholder="@..." required>
+                    </div>
+                    <div class="d-flex p-1 w-100 align-middle">
+                      <label class="text-dark m-1" style="width: 120px;">ids telegram</label> 
+                      <input type="text" class="form-control" name="tg_ids" id="tg_ids" placeholder="676352317 1226474188" style="max-width: 200px; max-height: 35px;" required>
+                    </div>
+                    <!-- LIARNING SUBJECTS display: none !important; -->
+                    <div class="col" style="height: 200px;" id="studied_subjects">
+                      <span class="text-dark" style="font-size: 20px;">Изучаемые предметы</span>
+      
+                      {% for subject in subjects %}
+                        <div id="{{ subject }}-studied_subject-block" name="studied_subject-block" class="d-flex p-0 w-100 justify-content-between" style="text-align: start; align-items:center; justify-content:center; display: none !important;"> 
+                          <span class="text-dark" style="width: 170px; padding-left: 4px;">{{ subject }}</span>
+      
+                          <div class="d-flex p-1" style="width: 350px; padding-left: 20px !important;" id="parent_choose_teacher">
+                            <select class="select selectpicker" data-width="300px" name="teacher_id_for_student---{{ subject }}" id="teacher_id_for_student---{{ subject }}" data-size="5" required>
+                                <option value="None">Не выбрано</option>
+                                {% for teacher in get_teachers_by_subject(subject) %}
+                                    <option value="{{ teacher._id }}" name="teacher_id_for_student">{{ teacher.fullname }}</option>
+                                {% endfor %}
+                            </select>
+                          </div>
+                        </div>
+                      {% endfor %}
+      
+                      <select class="w-100 border-1 border" id="add_studied_subject" style="margin-top: 3px;">
+                        <option hidden>ㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤДобавить</option>
+                        {% for subject in subjects %}
+                          <option value="{{ subject }}">{{ subject }}</option>
+                        {% endfor %}
+                      </select>
+      
+                      <!-- <button class="btn w-100 border-1 border" id="add_abonement" style="margin-top: 3px;">Добавить</button> -->
+      
+                    </div>
+              </div> 
+              <div class="col" style="height: 500px">
+                <div style="height: 250px;">
+                  <span class="text-dark" style="font-size: 20px;">Абонементы</span>
+
+                  {% for subject in subjects %}
+                    <div id="{{ subject }}-abonement_block" class="d-flex p-0 w-100 justify-content-between" style="text-align: start; align-items:center; justify-content:center; display: none !important;">
+                      <span class="text-dark" style="width: 140px; padding-left: 4px;">{{ subject }}</span>
+
+                      <div class="input-group" style="width: 110px;"> <span class="input-group-btn"> 
+                        <button type="button" class="btn btn-number" data-type="minus" name="{{ subject }}-change"> <span>-</span> </button></span>
+                        <input id="{{ subject }}" name="abonement---{{ subject }}" type="text" class="form-control input-number" style="max-height: 30px; margin-top: 6px;" value="0">
+                        <span class="input-group-btn"> <button type="button" class="btn btn-number" data-type="plus" name="{{ subject }}-change"> <span>+</span> </button> </span>
+                      </div>
+                    </div>
+                  {% endfor %}
+
+                  <select class="w-100 border-1 border" id="add_abonement" style="margin-top: 3px;">
+                    <option hidden>ㅤㅤㅤㅤㅤДобавить</option>
+                    {% for subject in subjects %}
+                      <option value="{{ subject }}">{{ subject }}</option>
+                    {% endfor %}
+                  </select>
+
+                  <!-- <button class="btn w-100 border-1 border" id="add_abonement" style="margin-top: 3px;">Добавить</button> -->
+                </div>
+
+                <div class="col p-1 align-middle">
+                  <label class="text-dark m-1" style="width: 120px;">Теги</label> 
+                  <input type="text" class="form-control" name="tags" id="tags" placeholder="... ..." style="max-width: 250px; max-height: 35px;" required>
+                </div>
+
+                <div class="col p-1 align-middle">
+                  <label class="text-dark m-1" style="width: 100%">Дополнительная информация</label> 
+                  <textarea type="text"  class="form-control" rows="7" name="info" id="info" placeholder="..." ></textarea>
+                </div>
+
+
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer justify-content-between p-2">
+            <a class="btn btn-danger">Удалить</a>
+            <button class="btn btn-success" type="submit">Сохранить</button>
+          </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Добавление клиента окно диалога -->
+<div class="modal fade modal-lg" id="addclient" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Добавление клиента</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+        </div>
+        <form method="post" action="/clients/create">
+            <div class="modal-body" style="height: 600px;">  
+              <div class="container-fluid row">   
+                <div class="container-fluid" style="width: 460px; height: 600px;">           
+                    <div class="d-flex p-1 w-100 align-middle">
+                      <label class="text-dark m-1" style="width: 120px;">Телефон</label> <input type="text" class="form-control" id="phone" style="max-width: 200px; max-height: 35px;" name="phone" id="phone" placeholder="+7 ..." required>
+                    </div>
+                    <div class="d-flex p-1 w-100 align-middle">
+                      <label class="text-dark m-1" style="width: 120px;">Почта</label> <input type="text" class="form-control" id="mail" style="max-width: 250px; max-height: 35px;" name="mail" id="phone" required>
+                    </div>
+                    <div class="d-flex p-1 w-100 align-middle">
+                      <label class="text-dark m-1" style="width: 120px;">ФИО</label> <input type="text" class="form-control" style="max-width: 300px; max-height: 35px;" name="fullname" id="fullname" required>
+                    </div>
+                    <div class="d-flex p-1 w-100 align-middle">
+                      <label class="text-dark m-1" style="width: 120px;">ФИО родителя</label> <input type="text" class="form-control" style="max-width: 300px; max-height: 35px;" name="parents_fullname" id="parents_fullname">
+                    </div>
+                    <div class="d-flex p-1 w-100 align-middle">
+                      <label class="text-dark m-1" style="width: 120px;">Часовой пояс</label> <input type="text" class="form-control" style="max-width: 100px; max-height: 35px;" name="timezone" id="timezone" placeholder="+0" required>
+                    </div>
+                    <div class="d-flex p-1 w-100 align-middle">
+                      <label class="text-dark m-1" style="width: 120px;">Класс</label> <input type="text" class="form-control" style="max-width: 100px; max-height: 35px;" name="grade" id="grade" placeholder="11" required>
+                    </div>
+                    <div class="d-flex p-1 w-100 align-middle">
+                      <label class="text-dark m-1" style="width: 120px;">Parents username</label> <input type="text" class="form-control" style="max-width: 200px; max-height: 35px;" name="parents_username_tg" id="parents_username_tg" style="max-height: 40px;" placeholder="@..." required>
+                    </div>
+                    <div class="d-flex p-1 w-100 align-middle">
+                      <label class="text-dark m-1" style="width: 120px;">Students username</label> <input type="text" class="form-control" style="max-width: 200px; max-height: 35px;" name="students_username_tg" id="students_username_tg" style="max-height: 40px;" placeholder="@..." required>
+                    </div>
+                    <div class="d-flex p-1 w-100 align-middle">
+                      <label class="text-dark m-1" style="width: 120px;">ids telegram</label> 
+                      <input type="text" class="form-control" name="tg_ids" id="tg_ids" placeholder="676352317 1226474188" style="max-width: 200px; max-height: 35px;" required>
+                    </div>
+
+                  </div>
+                  <div class="col" style="height: 500px">
+                    <div class="col p-1 align-middle">
+                      <label class="text-dark m-1" style="width: 120px;">Теги</label> 
+                      <input type="text" class="form-control" name="tags" id="tags" placeholder="... ..." style="max-width: 250px; max-height: 35px;">
+                    </div>
+    
+                    <div class="col p-1 align-middle">
+                      <label class="text-dark m-1" style="width: 100%">Дополнительная информация</label> 
+                      <textarea type="text"  class="form-control" rows="7" name="info" id="info" placeholder="..." style="max-width: 250px;"></textarea>
+                    </div>
+                  </div>
+              </div>  
+            </div>
+            <div class="modal-footer">
+            <button class="btn btn-success" type="submit">Создать</button>
+            </div>
+        </form>
+      </div>
+    </div>
+</div>
+
+
+<script>
+String.prototype.format = function () {
+    var args = arguments;
+    return this.replace(/\{(\d+)\}/g, function (m, n) { return args[n]; });
+    };
+
+
+
+$(document).on('click', "button[name=edit_client_bt]", function (event) {
+    var button = $(this) 
+    var recipient = button.data('client').split('///')
+    var modal = $("#editclient")
+
+    console.log(recipient)
+
+    modal.find('.modal-title').text('Клиент ' + recipient[0])
+    modal.find('.modal-body input[name=phone]').val(recipient[1])
+    modal.find('.modal-body input[name=mail]').val(recipient[2])
+    modal.find('.modal-body input[name=fullname]').val(recipient[3])
+    modal.find('.modal-body input[name=parents_fullname]').val(recipient[4])
+    modal.find('.modal-body input[name=timezone]').val(recipient[5])
+    modal.find('.modal-body input[name=grade]').val(recipient[6])
+    modal.find('.modal-body input[name=parents_username_tg]').val(recipient[7])
+    modal.find('.modal-body input[name=students_username_tg]').val(recipient[8])
+    modal.find('.modal-body input[name=tg_ids]').val(recipient[9])
+
+    modal.find('.modal-body input[name=tags]').val(recipient[12])
+    modal.find('.modal-body textarea[name=info]').val(recipient[13])
+
+
+    modal.find('.modal-body option').removeAttr('selected');
+    modal.find('#studied_subjects .filter-option-inner-inner').text('Не выбрано')
+    modal.find('div[name=studied_subject-block  ]').attr('style', 'text-align: start; align-items:center; justify-content:center; display: none !important;');
+
+    var abonements = recipient[10].split('--').slice(0,-1)
+
+    var studied_subjects = recipient[11].split('--').slice(0,-1)
+
+    // console.log(abonements, studied_subjects)
+
+    for (let i=0; i < studied_subjects.length; i++) {
+      studied_subject = studied_subjects[i].split('==')
+
+      var option_teacher = modal.find('select[id="teacher_id_for_student---{0}"] option[value={1}]'.format(studied_subject[0],studied_subject[1]))
+      
+      $(option_teacher).attr('selected','selected')
+      modal.find('button[data-id="teacher_id_for_student---{0}"] .filter-option-inner-inner'.format(studied_subject[0])).text($(option_teacher).text())
+
+      $('div[id="{0}-studied_subject-block"]'.format(studied_subject[0])).attr('style', 'display: flex  !important; text-align: start; align-items:center; justify-content:center;')
+    }
+
+
+    for (let i=0; i < abonements.length; i++) {
+      subject = abonements[i].split('==')[0]
+      value = abonements[i].split('==')[1]
+      // console.log('#{0}-block'.format(value))
+
+      if (value == '0') { $('div[id="{0}-abonement_block"]'.format(subject)).attr('style', 'display: none !important; text-align: start; align-items:center; justify-content:center;'); }
+      else {  $('div[id="{0}-abonement_block"]'.format(subject)).attr('style', 'display: flex  !important; text-align: start; align-items:center; justify-content:center;') }
+
+      modal.find('.modal-body input[id="{0}"]'.format(subject)).val(value)
+
+    }
+
+    modal.find('.modal-footer a').attr('href', '/clients/delete/'+recipient[0])
+    modal.find('.modal-content form').attr('action', '/clients/edit/'+recipient[0])
+
+    $('#editclient').modal('show');
+
+  })
+
+
+$(document).on('change', '#add_abonement', function() {
+  subject = $(this).val()
+  $('div[id="{0}-abonement_block"]'.format(subject)).attr('style', 'text-align: start; align-items:center; justify-content:center;');
+  $('input[id="{0}"]'.format(subject)).val(10)
+
+  $(this).replaceWith('<select class="w-100 border-1 border" id="add_abonement" style="margin-top: 3px;" required> <option hidden>Добавить</option> {% for subject in subjects %} <option value="{{ subject }}">{{ subject }}</option> {% endfor %} </select>')
+
+});
+
+
+$(document).on('change', '#add_studied_subject', function() {
+  subject = $(this).val()
+  $('div[id="{0}-studied_subject-block"]'.format(subject)).attr('style', 'text-align: start; align-items:center; justify-content:center;');
+
+  $(this).replaceWith('<select class="w-100 border-1 border" id="add_studied_subject" style="margin-top: 3px;" required> <option hidden>Добавить</option> {% for subject in subjects %} <option value="{{ subject }}">{{ subject }}</option> {% endfor %} </select>')
+
+});
+
+
+
+
+
+$(document).ready(function(){
+      $("#filter_input").on("keyup", function() {
+        var value = $(this).val().toLowerCase();
+        $("#table_data tr").filter(function() {
+          $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+      });
+    });
+
+$(document).on('click', '.btn-number', function(e) {
+  e.preventDefault();
+
+  fieldName = $(this).attr('name');
+  type = $(this).attr('data-type');
+  var input = $('input[id="{0}"]'.format(fieldName.split('-')[0]));
+  var currentVal = parseInt(input.val());
+  if (!isNaN(currentVal)) {
+    if (type == 'minus') {
+      input.val(currentVal - 1).change();
+    } else if (type == 'plus') {
+      input.val(currentVal + 1).change();
+    }
+  } else {
+    input.val(0);
+  }
+});
+
+
+
+</script>
+
+{% endblock %}

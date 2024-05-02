@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block title %}Statistic{% endblock %}
+
+{% block active_statistic %}active{% endblock %}
+
+
+{% block body %}
+
+<style>
+
+</style>
+
+
+<div class="container-fluid p-0 border-bottom border-1 border-dark" style="height: 100px; font-size: 20px;">
+    <div class="d-flex" style="height: 90px; width: 100%; padding: 10px !important; text-align: center;" id="parent_choose_teacher">
+        <div style="max-width: 200px; padding: 10px;">Доход: {{ statistic['all']['all_cost'] }}</div>
+        <div style="max-width: 300px; padding: 10px;">Уроков проведено: {{ statistic['all']['all_counts'] }}</div>
+        {% for subject in statistic['all']['subject_counts'] %}
+            <div style="max-width: 200px; padding: 10px 5px 10px 5px;">
+                {{ subject}}: {{statistic['all']['subject_counts'][subject] }}
+            </div>
+        {% endfor %}
+        <div style="max-width: 200px; padding: 10px;">Неоплаченные: {{ statistic['all']['no_paid'] }}</div>
+
+        <div style="max-width: 200px; padding: 10px;">Расходы: {{ statistic['all']['all_expenses'] }}</div>
+        <div style="max-width: 200px; padding: 10px;">Прибыль: {{ statistic['all']['profit'] }}</div>
+    </div>
+</div>
+
+<div class="container-fluid p-0 m-0 d-flex" style="height: 85vh;">
+    <div class="container-fluid p-0 m-0 d-flex" style="height: 600px;">
+        {% for month in statistic['months'] %}
+
+            <div style="width: 250px; height: 100%; margin: 20px 0px 20px 20px; background-color:aliceblue;">
+                <div style="margin: 10px; text-align: center;">{{ month }}</div>
+                <div style="margin: 10px;">Доход*: {{ statistic['months'][month]['all_cost_potential'] }}</div>
+                <div style="margin: 10px;">Доход: {{ statistic['months'][month]['all_cost'] }}</div>
+                <div style="margin: 10px;">Проведено: {{ statistic['months'][month]['all_counts'] }}</div>
+                <div style="height: 220px;">
+                    {% for subject in statistic['months'][month]['subject_counts'] %}
+                        <div style="margin: 5px 10px 5px 10px;">{{ subject}}: {{statistic['months'][month]['subject_counts'][subject] }}</div>
+                    {% endfor %}
+                </div>
+                <div style="margin: 10px;">Просроченные: {{ statistic['months'][month]['no_paid_overdue'] }}</div>
+                <div style="margin: 10px;">Расходы*: {{ statistic['months'][month]['all_expenses_potential'] }}</div>
+                <div style="margin: 10px;">Прибыль*: {{ statistic['months'][month]['profit_potential'] }}</div>
+                <div style="margin: 10px;">Расходы: {{ statistic['months'][month]['all_expenses'] }}</div>
+                <div style="margin: 10px;">Прибыль: {{ statistic['months'][month]['profit'] }}</div>
+
+
+
+            </div>
+
+        {% endfor %}
+    </div>
+
+</div>
+
+
+
+<script>
+
+</script>
+
+{% endblock %}

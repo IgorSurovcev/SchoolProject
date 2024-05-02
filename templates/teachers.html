@@ -1,0 +1,326 @@
+{% extends 'base.html' %}
+
+{% block title %}Teachers{% endblock %}
+
+{% block active_teachers %}active{% endblock %}
+
+{% block body %}
+
+
+<div class="p-1 container" style="max-height: 100%; max-width: 100%; overflow: auto; padding: 0; margin: 0;">
+    <div class="container">
+        <!-- <div class="container-fluid p-2">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addclient">Добавить</button>
+        </div> -->
+        <div class="container-1 justify-content-between p-2">
+            <label><input type="text" id="filter_input" class="form-label search"></label>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addteacher">Добавить</button>
+        </div>
+    </div>
+
+    <div class="scroll-table">
+        <table id="teachers" class="table-wrapper-scroll-y results table table-sm table-striped border-top-color align-middle border-1 border-secondary" cellspacing="0">
+            <thead>
+                <tr>
+                    <th scope="col" style="width: 7%; padding-left: 5px;">#</th>
+                    <th scope="col" style="width: 15%;">Телефон</th>
+                    <th scope="col">ФИО</th>
+                    <th scope="col" style="width: 7%;">timezone</th>
+                    <th scope="col" style="width: 10%;">Username</th>
+                    <th scope="col">Предметы</th>
+                    <th scope="col" style="width: 10%;">Rank</th>
+                    <th scope="col" style="width: 5%;">Edit</th>
+                </tr>
+                <tr class="warning no-result">
+                    <td colspan="4"><i class="fa fa-warning"></i> No result</td>
+                </tr>
+            </thead>
+        </table>
+        <div class="scroll-table-body">
+            <table>
+                <tbody id="table_data">
+                {% for item in data %}
+                <tr>
+                    <th scope="row" style="width: 7%; padding-left: 5px;"> {{ item._id }} </th>
+                    <td style="width: 15%;"> {{ item.phone }} </td>
+                    <td> {{ item.fullname }} </td>
+                    <td style="width: 7%;"> {{ item.timezone }} </td>
+                    <td style="width: 10%;"> {{ item.username_tg }} </td>
+                    <td> {% for subject in item.spec %}{{ subject }}{% if item.spec[-1]!=subject %}, {% endif %}{% endfor %} </td>
+                    <td style="width: 10%;"> {{ item.rank }} </td>
+                    <td style="width: 5%;">    
+                        <button  data-bs-toggle="modal" data-bs-target="#editteacher" data-client="{{ item._id }}---{{ item.phone }}---{{ item.fullname }}---{{ item.id_tg }}---{{ item.timezone }}---{{ item.username_tg }}---{{ item.token }}---{{ item.rank }}---{% for subject in item.spec %}{{ subject }}{% if item.spec[-1]!=subject %}, {% endif %}{% endfor %}" type="button" class="btn bg-black" data-ripple-color="dark">
+                            <i class="fas fa-times"></i>
+                        </button> 
+                    </td> 
+                    <!--  name="button_{{ item._id }}" onclick="func_for_modal(this, data='{{ item }}')"  -->
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</div>
+
+<!-- EDIT -->
+<div class="modal fade modal-lg" id="editteacher"  aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Редактирование учителя</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+        </div>
+        <form method="post">
+            <div class="modal-body container-fluid row" style="height: 500px;">    
+                <div id="teacher_id" style="display: none;"></div>
+                <div class="container m-0" style="width: 500px;">          
+                    <div class="d-flex p-1 w-100 align-middle">
+                        <label class="text-dark m-1" style="width: 120px;">Телефон</label> 
+                        <input type="text" class="form-control" style="max-width: 200px; max-height: 35px;" name="phone" id="phone" placeholder="+7 ..." required>
+                    </div>
+                    <div class="d-flex p-1 w-100 align-middle">
+                        <label class="text-dark m-1" style="width: 120px;">ФИО</label> 
+                        <input type="text" class="form-control" style="max-width: 300px; max-height: 35px;" name="fullname" id="fullname" required>
+                    </div>
+                    <div class="d-flex p-1 w-100 align-middle">
+                        <label class="text-dark m-1" style="width: 120px;">Username</label> 
+                        <input type="text" class="form-control" style="max-width: 200px; max-height: 35px;" name="username_tg" id="username_tg" placeholder="@..." required>
+                    </div>
+                    <div class="d-flex p-1 w-100 align-middle">
+                        <label class="text-dark m-1" style="width: 120px;">Часовой пояс</label> 
+                        <input type="text" class="form-control" style="max-width: 100px; max-height: 35px;" name="timezone" id="timezone" placeholder="+0" required></div>
+
+                    <div class="d-flex p-1 w-100 align-middle">
+                        <label class="text-dark m-1" style="width: 120px;">Предметы</label> 
+                        <select class="select selectpicker" data-width="200px" name="spec" id="spec" title="Выбранные предметы" required multiple>
+                            {% for subject in subjects %}
+                            <option value="{{ subject }}">{{ subject }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>               
+                    <div class="d-flex p-1 w-100 align-middle">
+                        <label class="text-dark m-1" style="width: 120px;">Ранг</label> 
+                        <select class="form-select" style="width: 200px;" name="rank" id="rank" required>
+                            <option value="junior">junior</option>
+                            <option value="middle">middle</option>
+                            <option value="senior">senior</option>
+                        </select>
+                    </div>
+                    <div class="d-flex p-1 w-100 align-middle">
+                        <label class="text-dark m-1" style="width: 120px;">Token</label> 
+                        <input type="text" class="form-control" style="max-width: 200px; max-height: 35px;" name="token" id="token" required>
+                    </div>
+                    <div class="d-flex p-1 w-100 align-middle">
+                        <label class="text-dark m-1" style="width: 120px;">id_tg</label> 
+                        <input type="text" class="form-control" style="max-width: 200px; max-height: 35px;" name="id_tg" id="id_tg" placeholder="676352317" required>
+                    </div>
+                </div>
+                <div class="col" style="height: 250px;" id="studied_subjects">
+                    <div class="btn w-100 border-1 border" id="payment_to_teacher" style="margin-top: 3px;">Заплатить</div>
+    
+                </div>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <a class="btn btn-danger">Удалить</a>
+                <button class="btn btn-secondary" type="submit">Сохранить</button>
+            </div>
+        </form>
+      </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="payment_to_teacher_dialog" role="dialog" style="z-index: 10000;">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Список проведенных уроков</h5>
+        </div>
+        <div class="modal-body" style="max-height: 500px; overflow: auto;">
+          
+        </div>
+        <div class="modal-footer justify-content-between">
+          <!-- <button type="button" id="change_in_template" class="btn btn-primary">Внести изменения в шаблон</button> -->
+          <button type="button" id="pay_teacher" class="btn btn-secondary">Пометить оплаченными</button>
+          <h5 class="modal-title" id="sum"></h5>
+          <div style="display: none;" id="record_ids"></div>
+        </div>
+      </div>
+    </div>
+</div>
+
+
+
+
+
+<!-- Добавление учителя окно диалога -->
+<div class="modal fade modal-lg" id="addteacher"  aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Добавление учителя</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+        </div>
+        <form method="post" action="/teachers/create">
+            <div class="modal-body">                
+                <div class="d-lg-inline-flex p-3 w-100"><label class="text-dark m-2 col-sm-3">Телефон</label> <input type="text" class="form-control w-75" name="phone" id="phone" placeholder="+7 ..." required></div>
+                <div class="d-lg-inline-flex p-3 w-100"><label class="text-dark m-2 col-sm-3">ФИО</label> <input type="text" class="form-control w-75" name="fullname" id="fullname" required></div>
+                <div class="d-lg-inline-flex p-3 w-100"><label class="text-dark m-2 col-sm-3">Username</label> <input type="text" class="form-control w-75" name="username_tg" id="username_tg" placeholder="@..." required></div>
+                <div class="d-lg-inline-flex p-3 w-100"><label class="text-dark m-2 col-sm-3">Часовой пояс</label> <input type="text" class="form-control w-75" name="timezone" id="timezone" placeholder="+0" required></div>
+                <!-- <div class="d-lg-inline-flex p-3 w-100"><label class="text-dark m-2 col-sm-3">Ранг</label> <input type="text" class="form-control w-75" name="rank" id="rank" placeholder="11" required></div> -->
+                <div class="d-lg-inline-flex p-3 w-100"><label class="text-dark m-2 col-sm-3">Предметы</label> 
+                    <select class="select w-75 selectpicker" name="spec" id="spec" title="Выберите предметы" required multiple>
+                        {% for subject in subjects %}
+                        <option value="{{ subject }}">{{ subject }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="d-lg-inline-flex p-3 w-100"><label class="text-dark m-2 col-sm-3">Ранг</label> 
+                    <select class="form-select w-75" name="rank" id="rank" required>
+                        <!-- <option selected>Intern</option> -->
+                        <option value="junior">junior</option>
+                        <option value="middle">middle</option>
+                        <option value="senior">senior</option>
+                    </select>
+                </div>
+                <div class="d-lg-inline-flex p-3 w-100"><label class="text-dark m-2 col-sm-3">Token</label> <input type="text" class="form-control w-75" name="token" id="token" required></div>
+                <div class="d-lg-inline-flex p-3 w-100"><label class="text-dark m-2 col-sm-3">id_tg</label> <input type="text" class="form-control w-75" name="id_tg" id="id_tg" placeholder="676352317" required></div>
+            </div>
+            <div class="modal-footer">
+            <button class="btn btn-success" type="submit">Создать</button>
+            </div>
+        </form>
+      </div>
+    </div>
+</div>
+
+<script>
+
+$(document).on("click", "#payment_to_teacher", function(event) {
+
+    var teacher_id = $('#editteacher #teacher_id').text()
+
+
+    $.ajax({
+        url: "/salary_calculation/",
+        data: { 'teacher_id': teacher_id },
+        type: "GET",
+        dataType: "json",
+        success: function(records) {
+            console.log(records);
+
+            var record_ids = ''
+            var sum = 0
+            for (var record of records) {
+                // var record 
+
+                $.each(record, function(key, value) {
+                    $('#payment_to_teacher_dialog .modal-body').append(key+': '+value+"<br>")
+                });
+                $('#payment_to_teacher_dialog .modal-body').append("<br>")
+                
+                sum += record['teachers_fee']
+                record_ids += record['_id'] + ' '
+
+                // $('#payment_to_teacher_dialog .modal-body').append(JSON.stringify(records))
+            }
+
+            $('#payment_to_teacher_dialog #sum').text('Сумма: ' + String(sum))
+            $('#payment_to_teacher_dialog #record_ids').text(record_ids)
+
+            // $('#payment_to_teacher_dialog .modal-body').text(JSON.stringify(records)ss)
+
+        },
+        error: function(xhr, status, error) {
+            console.error(xhr.responseText);
+        }
+    });
+
+
+    $('#payment_to_teacher_dialog').modal('show');
+});
+
+
+
+$(document).on("click", "#pay_teacher", function(event) {
+
+    $.ajax({
+        url: "/salary_calculation/pay_teacher",
+        data: { 'record_ids': $('#payment_to_teacher_dialog #record_ids').text() }, type: "GET", dataType: "json",
+        success: function() {
+            location.reload();
+        },
+        error: function(xhr, status, error) {
+            console.error(xhr.responseText);
+        }
+    });
+
+
+});
+
+
+
+$('#editteacher').on('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget) 
+    var recipient = button.data('client').split('---')
+    var modal = $(this)
+    // modal.find('.modal-title').text('New message to ' + recipient)
+    // alert(recipient[8])
+    modal.find('#teacher_id').text(recipient[0])
+
+    modal.find('.modal-body input[name=phone]').val(recipient[1])
+    modal.find('.modal-body input[name=fullname]').val(recipient[2])
+    modal.find('.modal-body input[name=id_tg]').val(recipient[3])
+    modal.find('.modal-body input[name=timezone]').val(recipient[4])
+    modal.find('.modal-body input[name=username_tg]').val(recipient[5])
+    modal.find('.modal-body input[name=token]').val(recipient[6])
+
+    if (recipient[8].search('Математика') != -1) {
+        modal.find('.modal-body option[value=Математика]').attr('selected','selected')
+    } else {
+        modal.find('.modal-body option[value=Математика]').removeAttr('selected')
+    }
+    if (recipient[8].search('Русский язык') != -1) {
+        modal.find('.modal-body option[value="Русский язык"]').attr('selected','selected')
+    } else {
+        modal.find('.modal-body option[value="Русский язык"]').removeAttr('selected')
+    }
+    if (recipient[8].search('Химия') != -1) {
+        modal.find('.modal-body option[value=Химия]').attr('selected','selected')
+    } else {
+        modal.find('.modal-body option[value=Химия]').removeAttr('selected')
+    }
+
+    if (recipient[7] == 'junior') {
+    modal.find('.modal-body option[value=junior]').attr('selected','selected');
+    } else if (recipient[7] == 'middle') {
+    modal.find('.modal-body option[value=middle]').attr('selected','selected');
+    } else if (recipient[7] == 'senior') {
+    modal.find('.modal-body option[value=senior]').attr('selected','selected');
+    }
+
+    modal.find('.filter-option-inner-inner').text(recipient[8])
+    modal.find('.filter-option-inner-inner').css('color','black')
+
+    modal.find('.modal-footer a').attr('href', '/teachers/delete/'+recipient[0])
+    modal.find('.modal-content form').attr('action', '/teachers/edit/'+recipient[0])
+
+  })
+</script>
+
+
+
+<script>
+    $(document).ready(function(){
+      $("#filter_input").on("keyup", function() {
+        var value = $(this).val().toLowerCase();
+        $("#table_data tr").filter(function() {
+          $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+      });
+    });
+</script>
+
+{% endblock %}

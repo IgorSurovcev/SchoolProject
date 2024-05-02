@@ -1,0 +1,22 @@
+info
+msg
+msg
+msg
+chto-to2
+chto-to2
+chto-to2
+ERROR chto-to2
+exception
+NoneType: None
+ERROR Traceback (most recent call last):
+  File "C:\Users\777\AppData\Local\Temp\ipykernel_16660\235420418.py", line 2, in <module>
+    1/0
+    ~^~
+ZeroDivisionError: division by zero
+
+choise abonement for buy
+choise abonement for buy
+choise abonement for buy
+choise abonement for buy
+choise abonement for buy
+choise abonement for buy

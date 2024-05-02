@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+
+{% block title %}Events{% endblock %}
+
+{% block active_events %}active{% endblock %}
+
+
+{% block body %}
+
+<style>
+    table td, table th {
+    border-left: 1px solid #000;
+    border-right: 1px solid #000;
+    }
+</style>
+
+<div>
+    <table class="table table-sm table-striped border-top-color align-middle border-1 border-secondary m-0" cellspacing="0" >
+        <thead>
+            <tr>
+                <th scope="col" style="width: 7%; padding-left: 5px;">#</th>
+                <th scope="col" style="width: 12%">Тип</th>
+                <th scope="col" style="width: 7%;">id клиента</th>
+                <th scope="col" style="width: 7%;">id объекта</th>
+                <th scope="col" style="width: 11%;">Время</th>
+                <th scope="col" style="width: 5%;">Сумма</th>
+                <th scope="col">Описание</th>
+                <th scope="col" style="width: 13%;">Cтатус</th>
+                <th scope="col" style="width: 8%;">payment_id</th>
+                <th scope="col" style="width: 5%;">link</th>
+            </tr>
+            <tr class="warning no-result">
+                <td colspan="4"><i class="fa fa-warning"></i> No result</td>
+            </tr>
+        </thead>
+    </table>
+
+    <table class="table table-sm table-striped border-top-color align-middle border-1 border-secondary" cellspacing="0">
+        <thead>
+            <tr>
+                <th scope="col" style="width: 7%; padding-left: 5px;"><input type="text" class="form-control" id="_id" name="search" style="max-width: 100%; max-height: 30px;"></th>
+                <th scope="col" style="width: 12%"><input type="text" class="form-control" id="type" name="search" style="max-width: 100%; max-height: 30px;"></th>
+                <th scope="col" style="width: 7%;"><input type="text" class="form-control" id="client_id" name="search" style="max-width: 100%; max-height: 30px;"></th>
+                <th scope="col" style="width: 7%;"><input type="text" class="form-control" id="object_id" name="search" style="max-width: 100%; max-height: 30px;"></th>
+                <th scope="col" style="width: 11%;"><input type="text" class="form-control" id="creation_time" name="search" style="max-width: 100%; max-height: 30px;"></th>
+                <th scope="col" style="width: 5%;"><input type="text" class="form-control" id="amount" name="search" style="max-width: 100%; max-height: 30px;"></th>
+                <th scope="col"><input type="text" class="form-control" id="description" style="max-width: 100%; max-height: 30px;"></th>
+                <th scope="col" style="width: 13%;"><input type="text" class="form-control" id="status" name="search" style="max-width: 100%; max-height: 30px;"></th>
+                <th scope="col" style="width: 8%;"><input type="text" class="form-control" id="payment_id" name="search" style="max-width: 100%; max-height: 30px;"></th>
+                <th scope="col" style="width: 5%;"></th>
+            </tr>
+            <tr class="warning no-result">
+                <td colspan="4"><i class="fa fa-warning"></i> No result</td>
+            </tr>
+        </thead>
+    </table>
+    <div style="max-height: 680px; overflow: auto; width: 100%;">
+        <table style="width: 100%">
+            <tbody id="table_data">
+            {% for item in transactions_data %}
+            <tr style="font-size: 15px">    
+                <td name="_id" scope="row" style="width: 7%; padding-left: 5px;"> {{ item._id }} </th>
+                <td name="type" style="width: 12%;"> {{ item.type }} </td>
+                <td name="client_id" style="width: 7%;"> {{ item.client_id }} </td>
+                <td name="object_id" style="width: 7%;"> {{ item.object_id }} </td>
+                <td name="creation_time" style="width: 11%;"> {{ item.creation_time }} </td>
+                <td name="amount" style="width: 5%;"> {{ item.amount }} </td>
+                <td name="description"> {{ item.description }} </td>
+                <td name="status" style="width: 13%;"> {{ item.status }} </td> 
+                <td name="payment_id" style="width: 8%;"> {{ item.payment_id }} </td> 
+                <td style="width: 5%;"> <label name="copy_link" data-link='{{ item.payment_link }}' style="cursor: pointer"> Copy</label> </td> 
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+
+<script>
+String.prototype.format = function () {
+  var args = arguments;
+  return this.replace(/\{(\d+)\}/g, function (m, n) { return args[n]; });
+};
+
+$(document).on("click", "[name=copy_link]", function(event) {
+    var link = $(this).data('link')
+    var tempInput = document.createElement("input");
+    tempInput.value = link;
+    document.body.appendChild(tempInput);
+    tempInput.select();
+    document.execCommand("copy");
+    document.body.removeChild(tempInput);
+})
+
+
+
+$(document).ready(function(){
+    $("[name=search]").on("input", function() {
+        var value = $(this).val().toLowerCase();
+
+        console.log(value);
+
+        $("#table_data td[name={0}]".format($(this).attr('id'))).filter(function() {
+            var isVisible = $(this).text().toLowerCase().indexOf(value) > -1;
+
+            console.log(isVisible);
+            if (!$(this).closest("tr").is(":visible")) {
+                return
+            }
+
+            $(this).closest("tr").toggle(isVisible);
+
+
+        });
+});
+});
+
+</script>
+
+{% endblock %}

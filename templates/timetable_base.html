@@ -1,0 +1,694 @@
+{% extends 'base.html' %}
+
+{% block title %}Timetable{% endblock %}
+
+{% block active_timetable %}active{% endblock %}
+
+
+{% block body %}
+
+
+<div class="container-fluid p-0 border-bottom border-1 border-dark" style="height: 7%;">
+    <div class="d-flex p-1" style="width: 400px; padding-left: 20px !important;" id="parent_choose_teacher">
+        <select class="select selectpicker" data-width="350px" data-live-search="true" name="choose_teacher_id_for_special_block" id="choose_teacher_id_for_special_block" data-size="5" required>
+            {% for teacher in teachers_data %}
+                <option value="{{ teacher._id }}">{{ teacher.fullname }}</option>
+            {% endfor %}
+        </select>
+    </div>
+</div>
+
+<div class="container-fluid p-0 m-0" id="for_special" style="height: 85vh; " data-shift="{{ shift }}" data-teacher_id="{{ teacher_id }}">
+    <div class="container-fluid p-0 m-0" style="height: 50px;">
+        <div class="row w-100 p-0 m-0 border-bottom border-1 border-dark" style="height: 50px;">
+            <div class=" m-0 p-0" id="tuda" data-shift="{{ shift-1 }}" data-teacher_id="{{ teacher_id }}" style="text-align: center; align-items:center; justify-content:center; border-right: 1px solid black; width: 50px;" >
+                <p class="text-justify p-1 m-0" style="font-size: 18px; margin-top: 5px !important;">Туда</p>
+            </div>
+                <div class="col m-0 p-0" name="weekday" id="Понедельник_{{ date_weekdays[0][0] }}.{{ date_weekdays[0][1] }}.{{ date_weekdays[0][2] }}" data-intervals="{{ get_intervals(0, teacher_id) }}" data-is_free_day="{{ get_is_free_day(teacher_id,date_weekdays[0]) }}"  style="text-align: center; align-items:center; justify-content:center; border-right: 1px solid black;">
+                    <p class="text-justify p-0 m-0" style="font-size: 18px;">Понедельник</p>
+                    <p class="text-justify p-0 m-0" style="font-size: 14px;">{{ date_weekdays[0][2] }}.{{ date_weekdays[0][1] }}</p>
+                </div>
+                <div class="col m-0 p-0 " name="weekday" id="Вторник_{{ date_weekdays[1][0] }}.{{ date_weekdays[1][1] }}.{{ date_weekdays[1][2] }}" data-intervals="{{ get_intervals(1, teacher_id) }}" data-is_free_day="{{ get_is_free_day(teacher_id,date_weekdays[1]) }}" style="text-align: center; align-items:center; justify-content:center; border-right: 1px solid black;">
+                    <p class="text-justify p-0 m-0" style="font-size: 18px;">Вторник</p>
+                    <p class="text-justify p-0 m-0" style="font-size: 14px;">{{ date_weekdays[1][2] }}.{{ date_weekdays[1][1] }}</p>
+                </div>
+                <div class="col m-0 p-0" name="weekday" id="Среда_{{ date_weekdays[2][0] }}.{{ date_weekdays[2][1] }}.{{ date_weekdays[2][2] }}" data-intervals="{{ get_intervals(2, teacher_id) }}" data-is_free_day="{{ get_is_free_day(teacher_id,date_weekdays[2]) }}" style="text-align: center; align-items:center; justify-content:center; border-right: 1px solid black;">
+                    <p class="text-justify p-0 m-0" style="font-size: 18px;">Среда</p>
+                    <p class="text-justify p-0 m-0" style="font-size: 14px;">{{ date_weekdays[2][2] }}.{{ date_weekdays[2][1] }}</p>
+                </div>
+                <div class="col m-0 p-0" name="weekday" id="Четверг_{{ date_weekdays[3][0] }}.{{ date_weekdays[3][1] }}.{{ date_weekdays[3][2] }}" data-intervals="{{ get_intervals(3, teacher_id) }}" data-is_free_day="{{ get_is_free_day(teacher_id,date_weekdays[3]) }}" style="text-align: center; align-items:center; justify-content:center; border-right: 1px solid black;">
+                    <p class="text-justify p-0 m-0" style="font-size: 18px;">Четверг</p>
+                    <p class="text-justify p-0 m-0" style="font-size: 14px;">{{ date_weekdays[3][2] }}.{{ date_weekdays[3][1] }}</p>
+                </div>
+                <div class="col m-0 p-0" name="weekday" id="Пятница_{{ date_weekdays[4][0] }}.{{ date_weekdays[4][1] }}.{{ date_weekdays[4][2] }}" data-intervals="{{ get_intervals(4, teacher_id) }}" data-is_free_day="{{ get_is_free_day(teacher_id,date_weekdays[4]) }}" style="text-align: center; align-items:center; justify-content:center; border-right: 1px solid black;">
+                    <p class="text-justify p-0 m-0" style="font-size: 18px;">Пятница</p>
+                    <p class="text-justify p-0 m-0" style="font-size: 14px;">{{ date_weekdays[4][2] }}.{{ date_weekdays[4][1] }}</p>
+                </div>
+                <div class="col m-0 p-0" name="weekday" id="Суббота_{{ date_weekdays[5][0] }}.{{ date_weekdays[5][1] }}.{{ date_weekdays[5][2] }}" data-intervals="{{ get_intervals(5, teacher_id) }}" data-is_free_day="{{ get_is_free_day(teacher_id,date_weekdays[5]) }}" style="text-align: center; align-items:center; justify-content:center; border-right: 1px solid black;">
+                    <p class="text-justify p-0 m-0" style="font-size: 18px;">Суббота</p>
+                    <p class="text-justify p-0 m-0" style="font-size: 14px;">{{ date_weekdays[5][2] }}.{{ date_weekdays[5][1] }}</p>
+                </div>
+                <div class="col m-0 p-0" name="weekday" id="Воскресенье_{{ date_weekdays[6][0] }}.{{ date_weekdays[6][1] }}.{{ date_weekdays[6][2] }}" data-intervals="{{ get_intervals(6, teacher_id) }}" data-is_free_day="{{ get_is_free_day(teacher_id,date_weekdays[6]) }}" style="text-align: center; align-items:center; justify-content:center; border-right: 1px solid black;">
+                    <p class="text-justify p-0 m-0" style="font-size: 18px;">Воскресенье</p>
+                    <p class="text-justify p-0 m-0" style="font-size: 14px;">{{ date_weekdays[6][2] }}.{{ date_weekdays[6][1] }}</p>
+                </div>
+            <div class="m-0 p-0" id="suda" data-shift="{{ shift+1 }}" data-teacher_id="{{ teacher_id }}" style="text-align: center; align-items:center; justify-content:center; border-right: 1px solid black; width: 56px;">
+                <p class="text-justify p-1 m-0" style="font-size: 18px; margin-top: 5px !important;">Сюда</p>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="container-fluid p-0 m-0 border-bottom border-1 border-dark" id="special_timetable" style="height: 85vh; overflow-x: auto;"> 
+
+        <div class="row w-100 p-0 m-0 border-bottom border-top border-1 border-dark" style="height: 1500px;">
+            
+            <!-- LEFT TIMETABLE -->
+            <div class=" m-0 p-0" style="text-align: center; align-items:center; justify-content:center; border-right: 1px solid black; width: 50px;">
+                {% for hour in range(24) %}
+                    {% for minutes in ['00','30'] %}
+                        <div class="container-fluid p-0 m-0 border-bottom border-1 border-dark" style="height: 30px; background-color: #e9e9e9; padding-top: 5px !important; padding-left: 23px !important;">
+                            <p class="text-justify p-0 m-0" style="font-size: 11px; ">{{ hour }}:{{ minutes }}</p>
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+            </div>
+            <!-- MONDAY -->
+            <div class="col m-0 p-0" style="position: relative; text-align: center; align-items:center; justify-content: center; border-right: 1px solid black; padding-top: 14px !important;">
+                <!-- RECORDS -->
+                {% for item in teachers_week[0] %}
+                    <div name="edit_record-0" class="container p-0 m-0 edit_record" style="width: 98%; padding: 4px !important;
+                    {% if item['status_record'] == 'В ожидании клиента' %}background-color: #DDFFC8;{% elif item['status_record'] == 'Клиент пришел' %}background-color: #ff9640;{% elif item['status_record'] == 'Клиент не пришел' %}background-color: #ff8973;{% endif %} position: absolute; opacity: 0.98; border-radius: 7px; cursor: pointer; overflow: hidden; height: {{ item.duration }}px;  top: {{ get_top(item.time) }}px;"  data-client="{{ item._id }}---{{ item.teacher_id }}---{{ item.teachers_fullname }}---{{ item.student_id }}---{{ item.students_fullname }}---{{ item.subject }}---{{ item.date }}---{{ item.time }}---{{ item.duration }}---{{ item.price }}---{{ item.teachers_fee }}---{{ item.status_record }}---{{ item.status_payment }}---{{ item.status_payment_to_teacher }}---{{ item.meeting_link_for_student }}---{{ item.meeting_link_for_teacher }}---{{ item.link_to_record }}---{{  item.template_id  }}---{{ shift }}">
+                        <div class="p-0 m-0" style="text-align: left; font-size: 12px;">{{ item.students_fullname.split(' ')[1] }} {{ item.students_fullname.split(' ')[0] }}</div>
+                        <div class="p-0 m-0" style="text-align: left; font-size: 10px;">{{ item.grade }} класс || {{ item.subject }}</div>
+                        <div class="p-0 m-0" style="font-size: 10px; justify-content: space-between; display: flex;">{{ item.time }} - {{ item.time_end }}
+                            {% if item['status_payment'] == 'Оплачено разово' %}<img src="../static/images/icon_оплачено_разово.png" style="width: 20px; height: 20px;">{% elif item['status_payment'] == 'Оплачено абонементом' %}<img src="../static/images/icon_оплачено_абонементом.png" style="width: 20px; height: 20px;">{% elif item['status_payment'] == 'Автооплата' %}<img src="../static/images/icon_автооплата.png" style="width: 20px; height: 20px;">{% endif %}
+                        </div>
+                        
+
+                    </div>
+                    
+                {% endfor %}
+                {{ get_stripe(date_weekdays[0]) | safe }} 
+                <!-- LINES -->
+                {% for hour in range(24) %}
+                    {% for minutes in ['00','15','30','45'] %}
+                    <div class="container-fluid p-0 m-0 border-top border-1 border-dark time" name="create_record" data-record="{{ teacher_id }}---{{ teachers_fullname }}---{{ date_weekdays[0][0] }}-{{ date_weekdays[0][1] }}-{{ date_weekdays[0][2] }}---{{ hour }}:{{ minutes }}" style="height: 15px; background-color: {% if get_is_time_in_schedule(work_schedule, 0, hour, minutes) and get_isnot_free_day_timetable(work_schedule,date_weekdays[0][0],date_weekdays[0][1],date_weekdays[0][2]) %}white{% else %}#e9e9e9{% endif %};">   
+                        <p class="p-0 m-0 hide" style="display: none; color: white; padding-left: 5px !important; font-size: 10px;">{{ hour }}:{{ minutes }}</p>
+                    </div>
+                    {% endfor %}
+                {% endfor %}
+                
+            </div>
+            {# 1 #}
+            <div class="col m-0 p-0" style="position: relative; text-align: center; align-items:center; justify-content:center; border-right: 1px solid black; padding-top: 14px !important;">
+                <!-- RECORDS -->
+                {% for item in teachers_week[1] %}
+                    <div name="edit_record-1" class="container p-0 m-0 edit_record" style="width: 98%; padding: 4px !important;  {% if item['status_record'] == 'В ожидании клиента' %}background-color: #DDFFC8;{% elif item['status_record'] == 'Клиент пришел' %}background-color: #ff9640;{% elif item['status_record'] == 'Клиент не пришел' %}background-color: #ff8973;{% endif %} position: absolute; opacity: 0.98; border-radius: 7px; cursor: pointer; overflow: hidden; height: {{ item.duration }}px;  top: {{ get_top(item.time) }}px;"  data-client="{{ item._id }}---{{ item.teacher_id }}---{{ item.teachers_fullname }}---{{ item.student_id }}---{{ item.students_fullname }}---{{ item.subject }}---{{ item.date }}---{{ item.time }}---{{ item.duration }}---{{ item.price }}---{{ item.teachers_fee }}---{{ item.status_record }}---{{ item.status_payment }}---{{ item.status_payment_to_teacher }}---{{ item.meeting_link_for_student }}---{{ item.meeting_link_for_teacher }}---{{ item.link_to_record }}---{{  item.template_id  }}---{{ shift }}">
+                        <div class="p-0 m-0" style="text-align: left; font-size: 12px;">{{ item.students_fullname.split(' ')[1] }} {{ item.students_fullname.split(' ')[0] }}</div>
+                        <div class="p-0 m-0" style="text-align: left; font-size: 10px;">{{ item.grade }} класс || {{ item.subject }}</div>
+                        <div class="p-0 m-0" style="font-size: 10px; justify-content: space-between; display: flex;">{{ item.time }} - {{ item.time_end }}
+                            {% if item['status_payment'] == 'Оплачено разово' %}<img src="../static/images/icon_оплачено_разово.png" style="width: 20px; height: 20px;">{% elif item['status_payment'] == 'Оплачено абонементом' %}<img src="../static/images/icon_оплачено_абонементом.png" style="width: 20px; height: 20px;">{% elif item['status_payment'] == 'Автооплата' %}<img src="../static/images/icon_автооплата.png" style="width: 20px; height: 20px;">{% endif %}
+                        </div>                    </div> 
+                {% endfor %}
+                {{ get_stripe(date_weekdays[1]) | safe }} 
+
+                <!-- LINES -->
+                {% for hour in range(24) %}
+                    {% for minutes in ['00','15','30','45'] %}
+                    <div class="container-fluid p-0 m-0 border-top border-1 border-dark time" name="create_record" data-record="{{ teacher_id }}---{{ teachers_fullname }}---{{ date_weekdays[1][0] }}-{{ date_weekdays[1][1] }}-{{ date_weekdays[1][2] }}---{{ hour }}:{{ minutes }}" style="height: 15px; background-color: {% if get_is_time_in_schedule(work_schedule, 1, hour, minutes) and get_isnot_free_day_timetable(work_schedule,date_weekdays[1][0],date_weekdays[1][1],date_weekdays[1][2]) %}white{% else %}#e9e9e9{% endif %};">   
+                        <p class="p-0 m-0 hide" style="display: none; color: white; padding-left: 5px !important; font-size: 10px;">{{ hour }}:{{ minutes }}</p>
+                    </div>
+                    {% endfor %}
+                {% endfor %}
+            </div>
+            <div class="col m-0 p-0" style="position: relative; text-align: center; align-items:center; justify-content:center; border-right: 1px solid black; padding-top: 14px !important;">
+                {% for item in teachers_week[2] %}
+                    <div name="edit_record-2" class="container p-0 m-0 edit_record" style="width: 98%; padding: 4px !important;  {% if item['status_record'] == 'В ожидании клиента' %}background-color: #DDFFC8;{% elif item['status_record'] == 'Клиент пришел' %}background-color: #ff9640;{% elif item['status_record'] == 'Клиент не пришел' %}background-color: #ff8973;{% endif %} position: absolute; opacity: 0.98; border-radius: 7px; cursor: pointer; overflow: hidden; height: {{ item.duration }}px;  top: {{ get_top(item.time) }}px;"  data-client="{{ item._id }}---{{ item.teacher_id }}---{{ item.teachers_fullname }}---{{ item.student_id }}---{{ item.students_fullname }}---{{ item.subject }}---{{ item.date }}---{{ item.time }}---{{ item.duration }}---{{ item.price }}---{{ item.teachers_fee }}---{{ item.status_record }}---{{ item.status_payment }}---{{ item.status_payment_to_teacher }}---{{ item.meeting_link_for_student }}---{{ item.meeting_link_for_teacher }}---{{ item.link_to_record }}---{{  item.template_id  }}---{{ shift }}">
+                        <div class="p-0 m-0" style="text-align: left; font-size: 12px;">{{ item.students_fullname.split(' ')[1] }} {{ item.students_fullname.split(' ')[0] }}</div>
+                        <div class="p-0 m-0" style="text-align: left; font-size: 10px;">{{ item.grade }} класс || {{ item.subject }}</div>
+                        <div class="p-0 m-0" style="font-size: 10px; justify-content: space-between; display: flex;">{{ item.time }} - {{ item.time_end }}
+                            {% if item['status_payment'] == 'Оплачено разово' %}<img src="../static/images/icon_оплачено_разово.png" style="width: 20px; height: 20px;">{% elif item['status_payment'] == 'Оплачено абонементом' %}<img src="../static/images/icon_оплачено_абонементом.png" style="width: 20px; height: 20px;">{% elif item['status_payment'] == 'Автооплата' %}<img src="../static/images/icon_автооплата.png" style="width: 20px; height: 20px;">{% endif %}
+                        </div>                    </div> 
+                {% endfor %}
+                {{ get_stripe(date_weekdays[2]) | safe }} 
+
+                <!-- LINES -->
+                {% for hour in range(24) %}
+                    {% for minutes in ['00','15','30','45'] %}
+                    <div class="container-fluid p-0 m-0 border-top border-1 border-dark time" name="create_record" data-record="{{ teacher_id }}---{{ teachers_fullname }}---{{ date_weekdays[2][0] }}-{{ date_weekdays[2][1] }}-{{ date_weekdays[2][2] }}---{{ hour }}:{{ minutes }}" style="height: 15px; background-color: {% if get_is_time_in_schedule(work_schedule, 2, hour, minutes) and get_isnot_free_day_timetable(work_schedule,date_weekdays[2][0],date_weekdays[2][1],date_weekdays[2][2]) %}white{% else %}#e9e9e9{% endif %};">   
+                        <p class="p-0 m-0 hide" style="display: none; color: white; padding-left: 5px !important; font-size: 10px;">{{ hour }}:{{ minutes }}</p>
+                    </div>
+                    {% endfor %}
+                {% endfor %}
+            </div>
+            <div class="col m-0 p-0" style="position: relative; text-align: center; align-items:center; justify-content:center; border-right: 1px solid black; padding-top: 14px !important;">
+                {% for item in teachers_week[3] %}
+                    <div name="edit_record-3" class="container p-0 m-0 edit_record" style="width: 98%; padding: 4px !important;  {% if item['status_record'] == 'В ожидании клиента' %}background-color: #DDFFC8;{% elif item['status_record'] == 'Клиент пришел' %}background-color: #ff9640;{% elif item['status_record'] == 'Клиент не пришел' %}background-color: #ff8973;{% endif %} position: absolute; opacity: 0.98; border-radius: 7px; cursor: pointer; overflow: hidden; height: {{ item.duration }}px;  top: {{ get_top(item.time) }}px;"  data-client="{{ item._id }}---{{ item.teacher_id }}---{{ item.teachers_fullname }}---{{ item.student_id }}---{{ item.students_fullname }}---{{ item.subject }}---{{ item.date }}---{{ item.time }}---{{ item.duration }}---{{ item.price }}---{{ item.teachers_fee }}---{{ item.status_record }}---{{ item.status_payment }}---{{ item.status_payment_to_teacher }}---{{ item.meeting_link_for_student }}---{{ item.meeting_link_for_teacher }}---{{ item.link_to_record }}---{{  item.template_id  }}---{{ shift }}">
+                        <div class="p-0 m-0" style="text-align: left; font-size: 12px;">{{ item.students_fullname.split(' ')[1] }} {{ item.students_fullname.split(' ')[0] }}</div>
+                        <div class="p-0 m-0" style="text-align: left; font-size: 10px;">{{ item.grade }} класс || {{ item.subject }}</div>
+                        <div class="p-0 m-0" style="font-size: 10px; justify-content: space-between; display: flex;">{{ item.time }} - {{ item.time_end }}
+                            {% if item['status_payment'] == 'Оплачено разово' %}<img src="../static/images/icon_оплачено_разово.png" style="width: 20px; height: 20px;">{% elif item['status_payment'] == 'Оплачено абонементом' %}<img src="../static/images/icon_оплачено_абонементом.png" style="width: 20px; height: 20px;">{% elif item['status_payment'] == 'Автооплата' %}<img src="../static/images/icon_автооплата.png" style="width: 20px; height: 20px;">{% endif %}
+                        </div>                    </div> 
+                {% endfor %}
+                {{ get_stripe(date_weekdays[3]) | safe }} 
+
+                <!-- LINES -->
+                {% for hour in range(24) %}
+                    {% for minutes in ['00','15','30','45'] %}
+                    <div class="container-fluid p-0 m-0 border-top border-1 border-dark time" name="create_record" data-record="{{ teacher_id }}---{{ teachers_fullname }}---{{ date_weekdays[3][0] }}-{{ date_weekdays[3][1] }}-{{ date_weekdays[3][2] }}---{{ hour }}:{{ minutes }}" style="height: 15px; background-color: {% if get_is_time_in_schedule(work_schedule, 3, hour, minutes) and get_isnot_free_day_timetable(work_schedule,date_weekdays[3][0],date_weekdays[3][1],date_weekdays[3][2]) %}white{% else %}#e9e9e9{% endif %};">   
+                        <p class="p-0 m-0 hide" style="display: none; color: white; padding-left: 5px !important; font-size: 10px;">{{ hour }}:{{ minutes }}</p>
+                    </div>
+                    {% endfor %}
+                {% endfor %}
+            </div>
+            <div class="col m-0 p-0" style="position: relative; text-align: center; align-items:center; justify-content:center; border-right: 1px solid black; padding-top: 14px !important;">
+                {% for item in teachers_week[4] %}
+                    <div name="edit_record-4" class="container p-0 m-0 edit_record" style="width: 98%; padding: 4px !important;  {% if item['status_record'] == 'В ожидании клиента' %}background-color: #DDFFC8;{% elif item['status_record'] == 'Клиент пришел' %}background-color: #ff9640;{% elif item['status_record'] == 'Клиент не пришел' %}background-color: #ff8973;{% endif %} position: absolute; opacity: 0.98; border-radius: 7px; cursor: pointer; overflow: hidden; height: {{ item.duration }}px;  top: {{ get_top(item.time) }}px;"  data-client="{{ item._id }}---{{ item.teacher_id }}---{{ item.teachers_fullname }}---{{ item.student_id }}---{{ item.students_fullname }}---{{ item.subject }}---{{ item.date }}---{{ item.time }}---{{ item.duration }}---{{ item.price }}---{{ item.teachers_fee }}---{{ item.status_record }}---{{ item.status_payment }}---{{ item.status_payment_to_teacher }}---{{ item.meeting_link_for_student }}---{{ item.meeting_link_for_teacher }}---{{ item.link_to_record }}---{{  item.template_id  }}---{{ shift }}">
+                        <div class="p-0 m-0" style="text-align: left; font-size: 12px;">{{ item.students_fullname.split(' ')[1] }} {{ item.students_fullname.split(' ')[0] }}</div>
+                        <div class="p-0 m-0" style="text-align: left; font-size: 10px;">{{ item.grade }} класс || {{ item.subject }}</div>
+                        <div class="p-0 m-0" style="font-size: 10px; justify-content: space-between; display: flex;">{{ item.time }} - {{ item.time_end }}
+                            {% if item['status_payment'] == 'Оплачено разово' %}<img src="../static/images/icon_оплачено_разово.png" style="width: 20px; height: 20px;">{% elif item['status_payment'] == 'Оплачено абонементом' %}<img src="../static/images/icon_оплачено_абонементом.png" style="width: 20px; height: 20px;">{% elif item['status_payment'] == 'Автооплата' %}<img src="../static/images/icon_автооплата.png" style="width: 20px; height: 20px;">{% endif %}
+                        </div>                    </div> 
+                {% endfor %}
+                {{ get_stripe(date_weekdays[4]) | safe }} 
+
+                <!-- LINES -->
+                {% for hour in range(24) %}
+                    {% for minutes in ['00','15','30','45'] %}
+                    <div class="container-fluid p-0 m-0 border-top border-1 border-dark time" name="create_record" data-record="{{ teacher_id }}---{{ teachers_fullname }}---{{ date_weekdays[4][0] }}-{{ date_weekdays[4][1] }}-{{ date_weekdays[4][2] }}---{{ hour }}:{{ minutes }}" style="height: 15px; background-color: {% if get_is_time_in_schedule(work_schedule, 4, hour, minutes) and get_isnot_free_day_timetable(work_schedule,date_weekdays[4][0],date_weekdays[4][1],date_weekdays[4][2]) %}white{% else %}#e9e9e9{% endif %};">   
+                        <p class="p-0 m-0 hide" style="display: none; color: white; padding-left: 5px !important; font-size: 10px;">{{ hour }}:{{ minutes }}</p>
+                    </div>
+                    {% endfor %}
+                {% endfor %}
+            </div>
+            <div class="col m-0 p-0" style="position: relative; text-align: center; align-items:center; justify-content:center; border-right: 1px solid black; padding-top: 14px !important;">
+                {% for item in teachers_week[5] %}
+                    <div name="edit_record-5" class="container p-0 m-0 edit_record" style="width: 98%; padding: 4px !important;  {% if item['status_record'] == 'В ожидании клиента' %}background-color: #DDFFC8;{% elif item['status_record'] == 'Клиент пришел' %}background-color: #ff9640;{% elif item['status_record'] == 'Клиент не пришел' %}background-color: #ff8973;{% endif %} position: absolute; opacity: 0.98; border-radius: 7px; cursor: pointer; overflow: hidden; height: {{ item.duration }}px;  top: {{ get_top(item.time) }}px;"  data-client="{{ item._id }}---{{ item.teacher_id }}---{{ item.teachers_fullname }}---{{ item.student_id }}---{{ item.students_fullname }}---{{ item.subject }}---{{ item.date }}---{{ item.time }}---{{ item.duration }}---{{ item.price }}---{{ item.teachers_fee }}---{{ item.status_record }}---{{ item.status_payment }}---{{ item.status_payment_to_teacher }}---{{ item.meeting_link_for_student }}---{{ item.meeting_link_for_teacher }}---{{ item.link_to_record }}---{{  item.template_id  }}---{{ shift }}">
+                        <div class="p-0 m-0" style="text-align: left; font-size: 12px;">{{ item.students_fullname.split(' ')[1] }} {{ item.students_fullname.split(' ')[0] }}</div>
+                        <div class="p-0 m-0" style="text-align: left; font-size: 10px;">{{ item.grade }} класс || {{ item.subject }}</div>
+                        <div class="p-0 m-0" style="font-size: 10px; justify-content: space-between; display: flex;">{{ item.time }} - {{ item.time_end }}
+                            {% if item['status_payment'] == 'Оплачено разово' %}<img src="../static/images/icon_оплачено_разово.png" style="width: 20px; height: 20px;">{% elif item['status_payment'] == 'Оплачено абонементом' %}<img src="../static/images/icon_оплачено_абонементом.png" style="width: 20px; height: 20px;">{% elif item['status_payment'] == 'Автооплата' %}<img src="../static/images/icon_автооплата.png" style="width: 20px; height: 20px;">{% endif %}
+                        </div>                    </div> 
+                {% endfor %}
+                {{ get_stripe(date_weekdays[5]) | safe }} 
+
+                <!-- LINES -->
+                {% for hour in range(24) %}
+                    {% for minutes in ['00','15','30','45'] %}
+                    <div class="container-fluid p-0 m-0 border-top border-1 border-dark time" name="create_record" data-record="{{ teacher_id }}---{{ teachers_fullname }}---{{ date_weekdays[5][0] }}-{{ date_weekdays[5][1] }}-{{ date_weekdays[5][2] }}---{{ hour }}:{{ minutes }}" style="height: 15px; background-color: {% if get_is_time_in_schedule(work_schedule, 5, hour, minutes) and get_isnot_free_day_timetable(work_schedule,date_weekdays[5][0],date_weekdays[5][1],date_weekdays[5][2]) %}white{% else %}#e9e9e9{% endif %};">   
+                        <p class="p-0 m-0 hide" style="display: none; color: white; padding-left: 5px !important; font-size: 10px;">{{ hour }}:{{ minutes }}</p>
+                    </div>
+                    {% endfor %}
+                {% endfor %}
+            </div>
+            <div class="col m-0 p-0" style="position: relative; text-align: center; align-items:center; justify-content:center; border-right: 1px solid black; padding-top: 14px !important;">
+                {% for item in teachers_week[6] %}
+                    <div name="edit_record-6" class="container p-0 m-0 edit_record" style="width: 98%; padding: 4px !important;  {% if item['status_record'] == 'В ожидании клиента' %}background-color: #DDFFC8;{% elif item['status_record'] == 'Клиент пришел' %}background-color: #ff9640;{% elif item['status_record'] == 'Клиент не пришел' %}background-color: #ff8973;{% endif %} position: absolute; opacity: 0.98; border-radius: 7px; cursor: pointer; overflow: hidden; height: {{ item.duration }}px;  top: {{ get_top(item.time) }}px;"  data-client="{{ item._id }}---{{ item.teacher_id }}---{{ item.teachers_fullname }}---{{ item.student_id }}---{{ item.students_fullname }}---{{ item.subject }}---{{ item.date }}---{{ item.time }}---{{ item.duration }}---{{ item.price }}---{{ item.teachers_fee }}---{{ item.status_record }}---{{ item.status_payment }}---{{ item.status_payment_to_teacher }}---{{ item.meeting_link_for_student }}---{{ item.meeting_link_for_teacher }}---{{ item.link_to_record }}---{{  item.template_id  }}---{{ shift }}">
+                        <div class="p-0 m-0" style="text-align: left; font-size: 12px;">{{ item.students_fullname.split(' ')[1] }} {{ item.students_fullname.split(' ')[0] }}</div>
+                        <div class="p-0 m-0" style="text-align: left; font-size: 10px;">{{ item.grade }} класс || {{ item.subject }}</div>
+                        <div class="p-0 m-0" style="font-size: 10px; justify-content: space-between; display: flex;">{{ item.time }} - {{ item.time_end }}
+                            {% if item['status_payment'] == 'Оплачено разово' %}<img src="../static/images/icon_оплачено_разово.png" style="width: 20px; height: 20px;">{% elif item['status_payment'] == 'Оплачено абонементом' %}<img src="../static/images/icon_оплачено_абонементом.png" style="width: 20px; height: 20px;">{% elif item['status_payment'] == 'Автооплата' %}<img src="../static/images/icon_автооплата.png" style="width: 20px; height: 20px;">{% endif %}
+                        </div>                    </div> 
+                {% endfor %}
+                {{ get_stripe(date_weekdays[6]) | safe  }} 
+
+                <!-- LINES -->
+                {% for hour in range(24) %}
+                    {% for minutes in ['00','15','30','45'] %}
+                    <div class="container-fluid p-0 m-0 border-top border-1 border-dark time" name="create_record" data-record="{{ teacher_id }}---{{ teachers_fullname }}---{{ date_weekdays[6][0] }}-{{ date_weekdays[6][1] }}-{{ date_weekdays[6][2] }}---{{ hour }}:{{ minutes }}" style="height: 15px; background-color: {% if get_is_time_in_schedule(work_schedule, 6, hour, minutes) and get_isnot_free_day_timetable(work_schedule,date_weekdays[6][0],date_weekdays[6][1],date_weekdays[6][2]) %}white{% else %}#e9e9e9{% endif %};">   
+                        <p class="p-0 m-0 hide" style="display: none; color: white; padding-left: 5px !important; font-size: 10px;">{{ hour }}:{{ minutes }}</p>
+                    </div>
+                    {% endfor %}
+                {% endfor %}
+            </div>
+
+            <div class="m-0 p-0" style="text-align: center; align-items:center; justify-content:center; border-right: 1px solid black; width: 50px;">
+                {% for hour in range(24) %}
+                    {% for minutes in ['00','30'] %}
+                        <div class="container-fluid p-0 m-0 border-bottom border-1 border-dark" style="height: 30px; background-color: #e9e9e9; padding-top: 5px !important; padding-right: 23px !important;">
+                            <p class="text-justify p-0 m-0" style="font-size: 11px; ">{{ hour }}:{{ minutes }}</p>
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+            </div>
+
+        </div>
+
+    </div>
+
+
+</div>
+
+
+
+
+
+<div class="modal modal fade" id="edit_working_hours" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel"></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+        </div>
+        <form method="post" action="/teachers/edit/{{ teacher_id }}">
+            <div class="modal-body" style="height: 420px;"> 
+                
+                <div class="col" style="height: 100%;">
+                        <span class="text-dark" style="font-size: 20px; text-align: center; width: 100%; margin-left: 18px;">Интервалы рабочего времени</span>
+
+                        <div class="container-fluid" style="justify-content: start; display: flex;" id="add_working_hours" name="0">
+                            <div class="btn border-1 border m-2">Добавить</div>
+                        </div>
+
+                        <input type="hidden" id="date_working_time" name="date_working_time">
+
+                        <div class="form-check" style="position: absolute; top: 370px;">
+                            <input class="form-check-input" type="checkbox" value="True" id="free_day" name="free_day">
+                            <label class="form-check-label" for="flexCheckDefault">
+                            Сделать день нерабочим 
+                            </label>
+                        </div>
+                  </div>
+                
+            </div>
+            <div class="modal-footer justify-content-end p-2">
+                <button class="btn btn-success" type="submit">Сохранить</button>
+            </div>
+        </form>
+      </div>
+    </div>
+</div>
+
+
+
+<!-- <div class="alert alert-warning alert-dismissible fade show" role="alert">
+    <strong>Holy guacamole!</strong> You should check in on some of those fields below.
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+</div> -->
+
+
+
+<!-- <div style="width: 100px; height: 100px; background-color: black;" name="create_record" >
+
+</div> -->
+{% endblock %}
+
+
+{% block scripts %}
+<script>
+// function sleep(milliseconds) {
+//   var start = new Date().getTime();
+//   for (var i = 0; i < 1e7; i++) {
+//     if ((new Date().getTime() - start) > milliseconds){
+//       break;
+//     }
+//   }
+// }
+
+
+    String.prototype.format = function () {
+        var args = arguments;
+        return this.replace(/\{(\d+)\}/g, function (m, n) { return args[n]; });
+        };
+
+$(document).on('click', "div[name=weekday]", function() {
+    var weekday = $(this).attr('id')
+    var intervals = $(this).data('intervals').split('_')
+    var is_free_day = $(this).data('is_free_day')
+    var modal = $("#edit_working_hours")
+    var shift = $("#for_special").data('shift')
+    var teacher_id = $("#for_special").data('teacher_id')
+
+    $('div[name=start_and_end_time]').remove()
+    
+    modal.find('.modal-title').text(weekday)
+    modal.find('input[id=date_working_time]').val(weekday.split('_')[1])
+
+    var k = 0
+    for (var interval in intervals) {
+        interval = intervals[interval]
+        // console.log(interval)
+        if (interval != '') {
+        $('<div name="start_and_end_time" class="p-1 m-1 w-100" style="align-items:center !important; height: 40px; display: flex;"> \
+                            <div  class="text-center" style="display: flex; width: 200px; align-items:center !important;">\
+                                <select class="select form-control time_working_hours" style="max-width: 80px; max-height: 35px; margin-left: 10px;" name="working_hours_start_{0}" title="Час" data-size="5" required>\
+                                    {% for hour in range(24) %}\
+                                        {% for minutes in ["00","15","30","45"] %}\
+                                        <option value="{{ hour }}:{{ minutes }}">{{ hour }}:{{ minutes }}</option>\
+                                        {% endfor %}\
+                                    {% endfor %}\
+                                </select>\
+                                <p style="margin-top: 10px; margin-left: 10px;">—</p>  \
+                                <select class="select form-control time_working_hours" style="max-width: 80px; max-height: 35px; margin-left: 10px;" name="working_hours_end_{0}" title="Час" data-size="5" required>\
+                                    {% for hour in range(24) %}\
+                                        {% for minutes in ["00","15","30","45"] %}\
+                                        <option value="{{ hour }}:{{ minutes }}">{{ hour }}:{{ minutes }}</option>\
+                                        {% endfor %}\
+                                    {% endfor %}\
+                                </select>\
+                            </div>\
+                            <div style="margin-left: 15px;" name="delite_working_hours">\
+                                X\
+                            </div>\
+            </div>'.format(k)).insertBefore( "#add_working_hours" );
+        $('select[name=working_hours_start_{0}] option[value="{1}"]'.format(k, interval.split('-')[0])).attr('selected', 'selected')
+        $('select[name=working_hours_end_{0}] option[value="{1}"]'.format(k, interval.split('-')[1])).attr('selected', 'selected')
+        k ++ 
+    }}
+    console.log(is_free_day)
+    if (is_free_day == 'True') {
+        $('#free_day').attr('checked','checked')
+    } else {
+        $('#free_day').removeAttr('checked')
+    }
+
+    
+
+
+    modal.find('.modal-content form').attr('action', '/teachers/edit/'+teacher_id+'?shift='+shift)
+    $('#edit_working_hours').modal('show');
+});
+
+$(document).on('click', "div[id=add_working_hours]", function() {
+    if ($(".time_working_hours").last().attr('name') == undefined) { var count = 0}
+    else {
+        count = $(".time_working_hours").length / 2;
+        console.log(count)
+    }
+    if (count <= 5) {
+    $(this).replaceWith('<div name="start_and_end_time" class="p-1 m-1 w-100" style="align-items:center !important;  height: 40px; display: flex;"> \
+                            <div  class="text-center" style="display: flex; width: 200px; align-items:center !important;"> \
+                                <select class="select form-control time_working_hours" style="max-width: 80px; max-height: 35px; margin-left: 10px;" name="working_hours_start_{0}" title="Час" data-size="5" required> \
+                                    {% for hour in range(24) %} \
+                                        {% for minutes in ["00","15","30","45"] %} \
+                                        <option value="{{ hour }}:{{ minutes }}">{{ hour }}:{{ minutes }}</option> \
+                                        {% endfor %} \
+                                    {% endfor %} \
+                                </select> \
+                                <p style="margin-top: 10px; margin-left: 10px;">—</p> \
+                                <select class="select form-control time_working_hours" style="max-width: 80px; max-height: 35px; margin-left: 10px;" name="working_hours_end_{0}" title="Час" data-size="5" required> \
+                                    {% for hour in range(24) %}\
+                                        {% for minutes in ["00","15","30","45"] %}\
+                                        <option value="{{ hour }}:{{ minutes }}">{{ hour }}:{{ minutes }}</option>\
+                                        {% endfor %}\
+                                    {% endfor %}\
+                                </select>\
+                            </div>\
+                            <div style="margin-left: 15px;" name="delite_working_hours">\
+                                X\
+                            </div>\
+                        </div>\
+                        <div class="container-fluid" style="justify-content: start; display: flex;" id="add_working_hours">\
+                            <div class="btn border-1 border m-2">Добавить</div>\
+                        </div>'.format(count))
+
+    }
+
+});
+
+$(document).on('click', "div[name=delite_working_hours]", function() {
+    // var id = +$(this).attr('id').split('_').slice(-1)[0]
+    // console.log($(this).parent().nextAll())
+    $(this).parent().remove()
+    var k = 0
+    $(".time_working_hours").each(function(index,item){
+        if (index % 2 == 0) {
+            $(item).attr('name','working_hours_start_{0}'.format(k))
+        } else {
+            $(item).attr('name','working_hours_end_{0}'.format(k))
+            k++
+        }
+
+        // if (Number($(record).css('top').slice(0, -2)) < top) { top = Number($(record).css('top').slice(0, -2))}
+    
+    })
+
+    
+
+
+});
+
+
+
+
+    $('#choose_teacher_id_for_special_block').on('change', function() {
+
+        window.location.href = '/timetable' + '?teacher_id=' + $(this).val() + '&shift=' + '0';
+
+    });
+
+    $(document).on('click', "div[id=tuda]", function() {
+        shift = $(this).data('shift')
+        teacher_id = $(this).data('teacher_id')
+
+        window.location.href = '/timetable' + '?teacher_id=' + teacher_id + '&shift=' + shift;
+
+    });
+
+    $(document).on('click', "div[id=suda]", function() {
+        shift = $(this).data('shift')
+        teacher_id = $(this).data('teacher_id')
+
+        window.location.href = '/timetable' + '?teacher_id=' + teacher_id + '&shift=' + shift;
+
+    });
+
+
+
+    $(function() {
+        $('#choose_teacher_id_for_special_block option[value="{{ teacher_id }}"]').attr('selected','selected');
+
+        var top = 475
+        for (let i=0; i < 7; i++) {
+            $("div[name=edit_record-{0}]".format(i)).each(function(index,record){
+                if (Number($(record).css('top').slice(0, -2)) < top) { top = Number($(record).css('top').slice(0, -2))}
+            })
+        }
+
+        $("#special_timetable").scrollTop( top );
+
+        for (let i=0; i < 7; i++) {
+            // $("div[name=edit_record-1]").css({'width':'50%', 'left': '50%'})
+            $("div[name=edit_record-{0}]".format(i)).each(function(index,record){
+                start = Number($(record).css('top').slice(0, -2))
+                end = Number($(record).css('top').slice(0, -2)) + Number($(record).css('height').slice(0, -2))
+                $("div[name=edit_record-{0}]".format(i)).each(function(index2,record2){
+                    if (index == index2) {return;}
+                    start2 = Number($(record2).css('top').slice(0, -2))
+                    end2 = Number($(record2).css('top').slice(0, -2)) + Number($(record2).css('height').slice(0, -2))
+                    if ((start <= start2 && start2 < end) || (start < end2 && end2 <= end)) {
+                        $(record).css({'width':'50%', 'left': '0'})
+                        $(record2).css({'width':'50%', 'left': '50%'}) }});});
+        }
+    });
+
+
+    $(document).on('click', "div[name=create_record]", function() {
+        var button = $(this) 
+        var recipient = button.data('record').split('---')
+        var modal = $("#addrecord")
+        // console.log(button.data('record'))
+    
+        modal.find('.modal-body option[value={0}]'.format(recipient[0])).attr('selected','selected');
+
+        modal.find('div[id=choose_teacher] .filter-option-inner-inner').text(recipient[1])
+        modal.find('div[id=choose_teacher] .filter-option-inner-inner').css('color','black')
+
+        date = recipient[2]
+        if (date.split('-')[2].length == 1) { date = date.split('-')[0] + '-' + date.split('-')[1] + '-' + '0' + date.split('-')[2] }
+        modal.find('.modal-body input[name=date]').val(date);
+    
+        modal.find('.modal-body option[value="{0}"]'.format(recipient[3])).attr('selected','selected');
+    
+        $('#addrecord').modal('show');
+    });
+    
+$(document).on('click', ".edit_record", function (event){
+// $('#editrecord').on('show.bs.modal', function (event) {
+    var button = $(this)
+    var recipient = button.data('client').split('---')
+    var modal = $("#editrecord") 
+    modal.find('.modal-title').text('Запись номер ' + recipient[0])
+    
+    
+
+    modal.find('.modal-body option').removeAttr('selected');
+
+    modal.find('.modal-body option[value="{0}"]'.format(recipient[1])).attr('selected','selected');
+    modal.find('div[id=choose_teacher] .filter-option-inner-inner').text(recipient[2])
+    modal.find('div[id=choose_teacher] .filter-option-inner-inner').css('color','black')
+
+    modal.find('.modal-body option[value="{0}"]'.format(recipient[3])).attr('selected','selected');
+    modal.find('div[id=choose_student] .filter-option-inner-inner').text(recipient[4])
+    modal.find('div[id=choose_student] .filter-option-inner-inner').css('color','black')
+
+    modal.find('.modal-body option[value="{0}"]'.format(recipient[5])).attr('selected','selected');
+    modal.find('div[id=choose_subject] .filter-option-inner-inner').text(recipient[5])
+    modal.find('div[id=choose_subject] .filter-option-inner-inner').css('color','black')
+
+    modal.find('.modal-body input[name=date]').val(recipient[6]);
+
+    modal.find('.modal-body option[value="{0}"]'.format(recipient[7])).attr('selected','selected');
+    modal.find('.modal-body option[value="{0}"]'.format(recipient[8])).attr('selected','selected');
+
+    modal.find('.modal-body input[name=price]').val(recipient[9]);
+    modal.find('.modal-body input[name=teachers_fee]').val(recipient[10]);
+
+    modal.find('.modal-body option[value="{0}"]'.format(recipient[11])).attr('selected','selected');
+    modal.find('div[id=status_record] .filter-option-inner-inner').text(recipient[11])
+    modal.find('div[id=status_record] .filter-option-inner-inner').css('color','black')
+
+    modal.find('.modal-body option[value="{0}"]'.format(recipient[12])).attr('selected','selected');
+    modal.find('div[id=status_payment] .filter-option-inner-inner').text(recipient[12])
+    modal.find('div[id=status_payment] .filter-option-inner-inner').css('color','black')
+
+    modal.find('.modal-body option[value="{0}"]'.format(recipient[13])).attr('selected','selected');
+    modal.find('div[id=status_payment_to_teacher] .filter-option-inner-inner').text(recipient[13])
+    modal.find('div[id=status_payment_to_teacher] .filter-option-inner-inner').css('color','black')
+
+
+    modal.find('.modal-body input[name=meeting_link_for_student]').val(recipient[14]);
+    modal.find('.modal-body input[name=meeting_link_for_teacher]').val(recipient[15]);
+    modal.find('.modal-body input[name=link_to_record]').val(recipient[16]);
+
+    console.log(modal.find('.modal-body input[name=template_id]'))
+    modal.find('.modal-body input[name=template_id]').val(recipient[17]);
+
+    modal.find('.modal-content form').attr('action', '/records/edit/'+recipient[0]+'?teacher_id='+recipient[1]+'&shift='+recipient[18])
+    modal.find('.modal-footer a').attr('href', '/records/delete/'+recipient[0]+'?teacher_id='+recipient[1]+'&shift='+recipient[18])
+    // +'&template_id='+recipient[17]
+    $('#editrecord').modal('show');
+})
+
+// FORM
+$(document).on('click', "#editrecord #btn_submit", function( event ) {
+    var template_id = $('#editrecord input[name=template_id]').val()
+
+    if (template_id == 'None') {
+        return
+    } else {
+        event.preventDefault();
+        $('#template_change_confirmation').modal('show');
+    }
+});
+
+// DELETE
+
+$(document).on("click", "#editrecord .modal-footer a", function (event) {
+    var template_id = $('#editrecord input[name=template_id]').val()
+
+    if (template_id == 'None') {
+        return
+    } else {
+        event.preventDefault();
+        $('#template_delite_confirmation').modal('show');
+    }
+});
+
+
+
+// SUBMITE FORM TEMPLATE
+$(document).on("click", "#change_in_template", function(event) {
+    event.preventDefault();
+    console.log($('#editrecord #btn_submit'))
+    $('#template_change_confirmation').modal('hide')
+    // $('#editrecord #btn_submit').click()
+    $('#editrecord form').submit()
+});
+
+// DISABLE FORM TEMPLATE
+$(document).on("click", "#disable_from_template", function(event) {
+    event.preventDefault();
+    $('#editrecord input[name=template_id]').val('None')
+    $('#template_change_confirmation').modal('hide')
+    $('#editrecord form').submit()
+});
+
+
+// SUBMITE DELETE TEMPLATE
+$(document).on("click", "#delete_template", function(event) {
+    event.preventDefault();
+    var template_id = $('#editrecord input[name=template_id]').val()
+    var href = $('#editrecord .modal-footer a').attr('href')
+    $('#template_delite_confirmation').modal('hide')
+    $.get(href+'&template_id='+template_id, function( data ) {
+            location.replace('/timetable/?'+href.split('?').slice(-1));
+        })
+    // setTimeout(
+    //     function()
+    //     {
+    //         location.replace('/timetable/?'+href.split('?').slice(-1));
+    //     }, 3000);
+});
+
+// DISABLE DELETE TEMPLATE
+$(document).on("click", "#delete_once", function(event) {
+    event.preventDefault();
+    var href = $('#editrecord .modal-footer a').attr('href')
+    $('#template_delite_confirmation').modal('hide')
+    $.get(href, function( data ) {
+            location.replace('/timetable/?'+href.split('?').slice(-1));
+        })
+        
+    // setTimeout(
+    //     function()
+    //     {
+    //         location.replace('/timetable/?'+href.split('?').slice(-1));
+    //     }, 1000);
+    
+});
+
+
+
+
+
+
+
+
+
+    
+</script>
+
+
+<div class="modal fade" id="template_change_confirmation" role="dialog" style="z-index: 10000;">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Внимание</h5>
+        </div>
+        <div class="modal-body">
+          <p>Эта запись создана по шаблону и связана с другими записями</p>
+        </div>
+        <div class="modal-footer justify-content-between">
+          <button type="button" id="change_in_template" class="btn btn-primary">Внести изменения в шаблон</button>
+          <button type="button" id="disable_from_template" class="btn btn-secondary" data-dismiss="modal">Изменить единично</button>
+        </div>
+      </div>
+    </div>
+</div>
+
+<div class="modal fade" id="template_delite_confirmation"  role="dialog" style="z-index: 10000;">
+<div class="modal-dialog" role="document">
+    <div class="modal-content">
+    <div class="modal-header">
+        <h5 class="modal-title">Внимание</h5>
+    </div>
+    <div class="modal-body">
+        <p>Эта запись создана по шаблону и связана с другими записями. Вы хоиите удалить все будущие записи, созданные по этому шаблону и сам шаблон?</p>
+    </div>
+    <div class="modal-footer justify-content-between">
+        <button type="button" id="delete_template" class="btn btn-primary">Удалить все записи</button>
+        <button type="button" id="delete_once" class="btn btn-secondary" data-dismiss="modal">Удалить только эту запись</button>
+    </div>
+    </div>
+</div>
+</div>
+
+
+
+
+
+{% endblock %}
